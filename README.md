@@ -50,34 +50,6 @@ Além disso, faz parte do desenvolvimento prático em tecnologia, aplicando conc
 
 ---
 
-## 📂 Estrutura do Projeto
-
-```
-/
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│
-├── backend/
-│   ├── api/
-│   ├── models/
-│   ├── views/
-│
-├── database/
-│   ├── migrations/
-│
-├── assets/
-│   ├── imagens/
-│   ├── icones/
-│
-└── REGISTROS/
-    ├── 24.03.2026/
-    ├── 25.03.2026/
-    └── 28.04.2026/
-```
-
----
 
 ## 📝 Registro do Desenvolvimento
 
