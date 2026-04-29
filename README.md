@@ -33,8 +33,7 @@ Além disso, faz parte do desenvolvimento prático em tecnologia, aplicando conc
 * Página inicial com apresentação da marca
 * Catálogo de produtos
 * Seção de saúde visual
-* Área de contato (WhatsApp / formulário)
-* Integração com Instagram
+* Área de contato (WhatsApp)
 * Estrutura preparada para futuras funcionalidades:
 
   * Reserva de óculos
