@@ -1,0 +1,12 @@
+# coisas do python
+venv/
+__pycache__/
+*.py[cod]
+.env
+
+# coisas do next
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+.DS_Store
