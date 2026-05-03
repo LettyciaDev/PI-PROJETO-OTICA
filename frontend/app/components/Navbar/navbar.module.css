@@ -1,5 +1,5 @@
 .navbar{
-    background-color: var(--navbar);
+    background-color: var(--marromE);
     display: flex;
     justify-content: center;
     z-index: 100;
@@ -28,6 +28,7 @@
     font-size: 18px;
     display: flex;
     align-items: center;
+    white-space: nowrap;
 }
 
 .direita{
@@ -55,4 +56,8 @@
 
 .imgNav{
     color: var(--bg);
+}
+
+.linkNav:hover{
+    color:#D4A373;
 }

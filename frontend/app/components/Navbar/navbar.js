@@ -21,13 +21,13 @@ export default function Navbar() {
           </div>
           <div className={styles.direita}>
             <Link href="/pesquisa" className={styles.linkNav}>
-              <IoIosSearch className={styles.imgNav} size={34} />
+              <IoIosSearch className={styles.imgNav} size={30} />
             </Link>
             <Link href="/carrinho" className={styles.linkNav}>
-              <BsHandbag className={styles.imgNav} size={30} />
+              <BsHandbag className={styles.imgNav} size={26} />
             </Link>
             <Link href="/perfil" className={styles.linkNav}>
-              <LiaUserSolid className={styles.imgNav} size={39} />
+              <LiaUserSolid className={styles.imgNav} size={35} />
             </Link>
           </div>
         </div>
