@@ -1,0 +1,63 @@
+.navbar{
+    background-color: var(--navbar);
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    top: 0;
+    position: sticky;
+}
+
+.navbarInterna{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 2000px;
+    padding: 10px 20px;
+    height: 80px;
+}
+
+.logo{
+    width: 184px;
+    height: 184px;
+}
+
+.linkNav{
+    color: var(--bg);
+    text-decoration: none;
+    font-family: "Joan", serif;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.direita{
+    display: flex;
+    flex: 1;
+    gap: 24px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.esquerda{
+    display: flex;
+    flex: 1;
+    justify-content: justify;
+    align-items: center;
+}
+
+.centro{
+    display: flex;
+    gap: 35px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.imgNav{
+    color: var(--bg);
+}
+
+.linkNav:hover{
+    color:#D4A373;
+}
