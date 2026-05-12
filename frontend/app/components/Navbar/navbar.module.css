@@ -1,5 +1,5 @@
 .navbar{
-    background-color: var(--marromE);
+    background-color: var(--navbar);
     display: flex;
     justify-content: center;
     z-index: 100;
@@ -17,8 +17,8 @@
 }
 
 .logo{
-    width: 40px;
-    height: 40px;
+    width: 184px;
+    height: 184px;
 }
 
 .linkNav{
@@ -42,7 +42,7 @@
 .esquerda{
     display: flex;
     flex: 1;
-    justify-content: flex-start;
+    justify-content: justify;
     align-items: center;
 }
 

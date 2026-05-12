@@ -11,7 +11,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.navbarInterna}>
           <div className={styles.esquerda}>
-            <IoIosSearch className={styles.imgNav} size={34}/>
+            <Image src="/Navbar/logo.png" className={styles.logo} width={184} height={184} alt="Logo" />
           </div>
           <div className={styles.centro}>
             <Link href="/home" className={styles.linkNav}>HOME</Link>
