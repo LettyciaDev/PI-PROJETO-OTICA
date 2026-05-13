@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('backend.core.urls')),
+    path('api-auth/', include('rest_framework.urls')),  # ← adiciona essa
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Swagger UI:
     path('api/docs/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # Redoc (uma alternativa visual mais limpa):
     path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
