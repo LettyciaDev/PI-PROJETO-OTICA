@@ -65,7 +65,12 @@ class ReservaSerializer(serializers.ModelSerializer):
         model = Reserva
         fields = '__all__'
         read_only_fields = ['criado_em', 'atualizado_em', 'oculos_snapshot', 'usuario']
- 
+    
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Este e-mail já está cadastrado.")
+        return value
+    
     def validate_oculos(self, value):
         if value is None:
             raise serializers.ValidationError("Selecione um óculos válido.")
