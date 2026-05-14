@@ -1,11 +1,8 @@
 .root {
   --brand: #1a1a1a;
   --brand-accent: #c0392b;
-  --bg: #faf8f5;
   --surface: #ffffff;
   --border: #e2dbd3;
-  --text-primary: #1a1a1a;
-  --text-secondary: #6b6460;
   --text-muted: #9e9790;
   --brown: #8b5e3c;
   --brown-dark: #6b4628;
@@ -18,11 +15,7 @@
   --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
 
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg);
-  color: var(--text-primary);
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .pagina {
@@ -69,55 +62,6 @@
   transform: scale(1.03);
 }
 
-.favorito {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: rgba(255,255,255,0.85);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: background 0.2s, transform 0.2s;
-}
-
-.favorito:hover {
-  background: #fff;
-  transform: scale(1.1);
-}
-
-.thumbnails {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.thumb {
-  flex: 1;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, #e0d6cc, #ccc4ba);
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.2s, transform 0.15s;
-  padding: 0;
-}
-
-.thumb:hover {
-  transform: translateY(-2px);
-  border-color: var(--brown);
-}
-
-.thumbAtiva {
-  border-color: var(--brand) !important;
-  box-shadow: 0 0 0 2px var(--brand);
-}
-
 .colunaDetalhes {
   padding-top: 8px;
 }
@@ -128,21 +72,15 @@
   font-weight: 400;
   line-height: 1.15;
   margin: 0 0 14px;
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .preco {
   font-size: 1.55rem;
   font-weight: 700;
   font-family: "Poppins", sans-serif;
-  color: var(--text-primary);
+  color: var(--marromTexto);
   margin: 0 0 4px;
-}
-
-.parcelas {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin: 0 0 20px;
 }
 
 .divider {
@@ -157,14 +95,14 @@
 
 .labelSecao {
   font-size: 0.83rem;
-  color: var(--text-secondary);
+  color: var(--marromTexto);
   margin: 0 0 10px;
   font-weight: 400;
   font-family: "Poppins", sans-serif;
 }
 
 .labelSecao strong {
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .cores {
@@ -211,13 +149,13 @@
   align-items: center;
   gap: 8px;
   font-size: 0.83rem;
-  color: var(--text-secondary);
+  color: var(--marromTexto);
   cursor: pointer;
   transition: color 0.15s;
 }
 
 .checkboxItem:hover {
-  color: var(--text-primary);
+  color: #2d1e13;
 }
 
 .checkbox {
@@ -230,7 +168,7 @@
 
 .armacao {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--marromTexto);
   margin: 0 0 4px;
 }
 
@@ -292,26 +230,6 @@
   transform: translateY(-1px);
 }
 
-.btnWishlist {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 14px 18px;
-  background: transparent;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 0.83rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.btnWishlist:hover {
-  border-color: var(--brown);
-  color: var(--brown);
-}
-
 .entrega {
   display: flex;
   align-items: center;
@@ -326,7 +244,7 @@
 
 .especificacoes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0;
   border-top: 1.5px solid var(--border);
   border-bottom: 1.5px solid var(--border);
@@ -352,7 +270,7 @@
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: var(--marromTexto);
   margin: 0 0 16px;
 }
 
@@ -374,7 +292,7 @@
 
 .EspecLinha span:last-child {
   font-size: 0.85rem;
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .avaliacoes {
@@ -396,7 +314,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin: 0;
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .mediaAvaliacoes {
@@ -408,7 +326,7 @@
 .nota {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .estrelasMedia {
@@ -496,12 +414,12 @@
 .nomeUsuario {
   font-size: 0.84rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--marromTexto);
 }
 
 .comentario {
   font-size: 0.83rem;
-  color: var(--text-secondary);
+  color: var(--marromTexto);
   margin: 0;
   line-height: 1.5;
 }

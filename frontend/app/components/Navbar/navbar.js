@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LiaUserSolid } from "react-icons/lia";
 import { IoIosSearch } from "react-icons/io";
-import { BsHandbag } from "react-icons/bs";
+import { IoBagOutline } from "react-icons/io5";
 
 export default function Navbar() {
   return (
@@ -11,7 +11,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.navbarInterna}>
           <div className={styles.esquerda}>
-            <Image src="/Navbar/logo.png" className={styles.logo} width={184} height={184} alt="Logo" />
+            <Image src="/Navbar/vizzologo.png" className={styles.logo} width={200} height={200} alt="Vizzo Logo" priority />
           </div>
           <div className={styles.centro}>
             <Link href="/home" className={styles.linkNav}>HOME</Link>
@@ -20,14 +20,20 @@ export default function Navbar() {
             <Link href="/contato" className={styles.linkNav}>CONTATO</Link>
           </div>
           <div className={styles.direita}>
-            <Link href="/pesquisa" className={styles.linkNav}>
-              <IoIosSearch className={styles.imgNav} size={30} />
+            <Link href="/pesquisa" className={styles.linkNavIcone}>
+            <div className={styles.containerIcone}>
+              <IoIosSearch size={50} />
+            </div>
             </Link>
-            <Link href="/carrinho" className={styles.linkNav}>
-              <BsHandbag className={styles.imgNav} size={26} />
+            <Link href="/carrinho" className={styles.linkNavIcone}>
+              <div className={styles.containerIcone}>
+                <IoBagOutline size={50} />
+              </div>
             </Link>
-            <Link href="/perfil" className={styles.linkNav}>
-              <LiaUserSolid className={styles.imgNav} size={35} />
+            <Link href="/perfil" className={styles.linkNavIcone}>
+            <div className={styles.containerIcone}>
+              <LiaUserSolid size={55} />
+            </div>
             </Link>
           </div>
         </div>
