@@ -3,8 +3,7 @@ import { useState } from "react";
 import styles from "./produtos.module.css";
 import Image from "next/image";
 
-export default function ProdutoModelo() {
-  const [corSelecionada, setCorSelecionada] = useState("Preto");
+export default function ProdutoCliente({ oculos }) {
   const [lentes, setLentes] = useState({
     Antirreflexo: false,
     Antirrisco: false,
@@ -23,6 +22,10 @@ export default function ProdutoModelo() {
   const toggleLente = (nome) =>
     setLentes((prev) => ({ ...prev, [nome]: !prev[nome] }));
 
+  const capitalize = (texto) => {
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+  };
+
   return (
     <div className={styles.root}>
 
@@ -31,19 +34,19 @@ export default function ProdutoModelo() {
 
           <div className={styles.colunaImagem}>
             <div className={styles.imagemPrincipal}>
-              <Image src="/produtos/oculos.jpg" alt="Acetato Reserva" className={styles.imgOculos} width={100} height={100}/>
+              <Image src="/produtos/oculos.jpg" alt="Foto do Oculos" className={styles.imgOculos} width={100} height={100}/>
             </div>
           </div>
 
           <div className={styles.colunaDetalhes}>
-            <h1 className={styles.nomeProduto}>Acetato Reserva</h1>
-            <p className={styles.preco}>R$ 349,90</p>
+            <h1 className={styles.nomeProduto}>{capitalize(oculos.nome)}</h1>
+            <p className={styles.preco}>R$ {oculos.preco}</p>
 
             <div className={styles.divider} />
 
             <div className={styles.secaoCor}>
               <p className={styles.labelSecao}>
-                Cor: <strong>{corSelecionada}</strong>
+                Cor: {capitalize(oculos.cor)}
               </p>
             </div>
             <div className={styles.secaoLente}>
@@ -63,7 +66,7 @@ export default function ProdutoModelo() {
               </div>
             </div>
 
-            <p className={styles.armacao}>Armação: <strong>Metal</strong></p>
+            <p className={styles.armacao}>Armação: <strong>{capitalize(oculos.material)}</strong></p>
 
             <div className={styles.divider} />
 
@@ -88,22 +91,26 @@ export default function ProdutoModelo() {
             <p className={styles.EspecTitulo}>DESCRIÇÃO DA ARMAÇÃO</p>
             <div className={styles.EspecLinha}>
               <span className={styles.EspecLabel}>Formato da armação</span>
-              <span>Redondo</span>
+              <span>{capitalize(oculos.formato)}</span>
             </div>
             <div className={styles.EspecLinha}>
               <span className={styles.EspecLabel}>Tipo de material</span>
-              <span>Metal</span>
+              <span>{capitalize(oculos.material)}</span>
             </div>
           </div>
           <div className={styles.colEspec}>
             <p className={styles.EspecTitulo}>TAMANHO DO PRODUTO</p>
             <div className={styles.EspecLinha}>
-              <span className={styles.EspecLabel}>Tamanho</span>
-              <span>50 22 mm</span>
+              <span className={styles.EspecLabel}>Comprimento do aro</span>
+              <span>{oculos.medida_aro} mm</span>
+            </div>
+            <div className={styles.EspecLinha}>
+              <span className={styles.EspecLabel}>Comprimento da ponte</span>
+              <span>{oculos.medida_ponte} mm</span>
             </div>
             <div className={styles.EspecLinha}>
               <span className={styles.EspecLabel}>Comprimento da haste</span>
-              <span>150 mm</span>
+              <span>{oculos.medida_haste} mm</span>
             </div>
           </div>
         </section>

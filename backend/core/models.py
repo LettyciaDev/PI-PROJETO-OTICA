@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 import os
 
 class Oculos(models.Model):
@@ -36,6 +37,7 @@ class Oculos(models.Model):
 
     codigo_referencia = models.IntegerField(unique=True)
     nome = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
     marca = models.CharField(max_length=50, choices=MARCAS_CHOICES, default='outro')
     material = models.CharField(max_length=50, choices=MATERIAL_CHOICES, default='outro')
     cor = models.CharField(max_length=50)
@@ -48,10 +50,13 @@ class Oculos(models.Model):
     quantidade_estoque = models.IntegerField(default=0)
     criado_em = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nome)
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.nome} - {self.marca}"
-
-
 
 # reservas/models.py
 def receita_upload_path(instance, filename):

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
 from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer
 from .models import Oculos, Reserva
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -29,6 +29,22 @@ class OculosViewSet(viewsets.ModelViewSet):
     queryset = Oculos.objects.all().order_by('-criado_em')
     serializer_class = OculosSerializer
     permission_classes = [IsAdminUser]
+
+class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Oculos.objects.all().order_by('-criado_em')
+    serializer_class = OculosSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'slug'
+    
+@api_view(['GET'])
+def oculos_detalhe(request, slug):
+    try:
+        oculos = Oculos.objects.get(slug=slug)
+    except Oculos.DoesNotExist:
+        return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = OculosSerializer(oculos)
+    return Response(serializer.data)
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.select_related('usuario', 'oculos').all()
