@@ -1,0 +1,87 @@
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--navbar);
+}
+
+.meio{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem;
+    gap: 2rem;
+}
+
+.vizzo{
+    align-self: center;
+}
+
+.vizzo span{
+    font-family: 'Jomolhari', serif;
+    font-weight: 500;
+    font-size: 2rem;
+    color: var(--marromTexto);
+}
+
+.vizzo p{
+    font-family: 'Poppins', sans-serif;
+    color: var(--bg);
+    font-weight: 400;
+    width: 60%;
+}
+
+.listona {
+    border-left: 1px solid rgba(255,255,255,0.15);
+    padding-left: 2rem;
+}
+
+.listona h1{
+    font-family: "Merriweather", serif;
+    font-weight: 500;
+    color: var(--marromTexto);
+    font-size: 27px;
+    margin-bottom: 0.7rem;
+}
+
+.listinha{
+    list-style: none;
+    padding: 0;       
+    margin: 0;
+}
+
+.listinha li{
+    font-family: 'Poppins', sans-serif;
+    color: var(--bg);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    cursor: default;
+    transition: all 0.25s ease;
+}
+
+.listinha li:hover {
+    color: var(--marromTexto);
+    transform: scale(1.03)
+}
+
+.listinha a{
+    text-decoration: none;
+    color: var(--bg);
+}
+
+.listinha a:hover{
+    color: var(--marromTexto);
+    transform: scale(1.03)
+}
+
+.baixo{
+    width: 100%;
+    border-top: solid 1px var(--bg);
+    color: var(--bg);
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+}
