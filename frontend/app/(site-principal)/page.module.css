@@ -1,0 +1,87 @@
+.main {
+  min-height: 100vh;
+  background-color: #000; /* Fundo de segurança */
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Ocupa a tela inteira */
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent), 
+                    url('/caminho-da-sua-imagem.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 60px;
+  background: transparent;
+  z-index: 10;
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+
+.navLinks li {
+  color: #d1b19a; /* Cor bege/dourada dos menus */
+  font-family: 'Times New Roman', serif; /* Ou a fonte específica da Vizzo */
+  font-size: 14pt;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.navLinks li:hover {
+  opacity: 0.7;
+}
+
+.heroContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 10%; /* Recuo para o texto não colar na borda */
+}
+
+.heroContent h1 {
+  color: #fff;
+  font-family: 'Times New Roman', serif;
+  font-size: 40pt;
+  font-weight: 300;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.highlight {
+  color: #d1b19a; /* Cor Bege do "PERFEITO" */
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 1px;
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 20px;
+  }
+  
+  .navLinks {
+    display: none; /* Em mobile você pode implementar um menu hamburguer depois */
+  }
+
+  .heroContent h1 {
+    font-size: 32pt;
+  }
+}
