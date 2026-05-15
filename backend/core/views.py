@@ -1,10 +1,11 @@
 from rest_framework import views
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer, MyTokenObtainPairSerializer
 from .models import Oculos, Reserva
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -15,6 +16,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.conf import settings
+from .permissions import IsAdminUserOnly
 
 
 class RegisterView(generics.CreateAPIView):
@@ -145,3 +147,18 @@ class ReservaViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(ReservaSerializer(reserva, context={'request': request}).data)
+    
+# administrador
+class AdminDashboardView(views.APIView):
+    permission_classes = [IsAdminUserOnly] # Apenas Staff
+
+    @extend_schema(
+        summary="Área do Administrador",
+        description="Endpoint acessível apenas para usuários com is_staff=True.",
+        responses={200: {"description": "Dados sensíveis do painel"}}
+    )
+    def get(self, request):
+        return Response({"message": "Bem-vindo ao painel administrativo!"})
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

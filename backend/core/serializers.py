@@ -65,7 +65,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         self.user.save()
         return self.user 
     
-    
+
 # oculos/serializers.py
 class OculosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -165,3 +165,16 @@ class ReservaStatusSerializer(serializers.ModelSerializer):
         if value not in VALIDOS:
             raise serializers.ValidationError(f"Status inválido. Opções: {VALIDOS}")
         return value
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Adiciona dados customizados do utilizador
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        data['is_staff'] = self.user.is_staff  
+        
+        return data
