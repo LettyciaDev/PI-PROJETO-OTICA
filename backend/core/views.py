@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer, MyTokenObtainPairSerializer
+from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer, 
+                          ReservaStatusSerializer, PasswordResetRequestSerializer, 
+                          PasswordResetConfirmSerializer, MyTokenObtainPairSerializer, 
+                          StaffRegistrationSerializer)
 from .models import Oculos, Reserva
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
@@ -17,6 +20,7 @@ from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.conf import settings
 from .permissions import IsAdminUserOnly
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 
 class RegisterView(generics.CreateAPIView):
@@ -162,3 +166,55 @@ class AdminDashboardView(views.APIView):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+
+class CreateStaffView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = StaffRegistrationSerializer
+    permission_classes = [IsAdminUserOnly] # TRAVA DE SEGURANÇA: Só staff entra aqui
+
+    @extend_schema(
+        summary="Adicionar novo membro da equipe",
+        description="Permite que um administrador cadastre outro usuário com status de Staff.",
+        responses={201: StaffRegistrationSerializer}
+    )
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class PromoteToStaffByEmailView(views.APIView):
+    permission_classes = [IsAdminUserOnly]
+
+    @extend_schema(
+        summary="Promover usuário para Staff via E-mail",
+        description="Transforma um usuário comum em administrador localizando-o pelo endereço de e-mail.",
+        parameters=[
+            OpenApiParameter(
+                name='email',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description='Endereço de e-mail do usuário a ser promovido',
+            )
+        ],
+        responses={
+            200: {"description": "Sucesso", "example": {"detail": "Usuário exemplo@otica.com agora é Staff."}},
+            404: {"description": "Não encontrado", "example": {"error": "Usuário com este e-mail não encontrado."}},
+            403: {"description": "Proibido", "example": {"detail": "Você não tem permissão."}}
+        },
+        tags=['Administração']
+    )
+    def post(self, request, email):
+        try:
+            # Buscamos pelo campo email
+            user = User.objects.get(email=email)
+            user.is_staff = True
+            user.save()
+            return Response(
+                {"detail": f"O usuário com e-mail {email} agora possui acesso de Staff."}, 
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Usuário com este e-mail não encontrado."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )

@@ -178,3 +178,21 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['is_staff'] = self.user.is_staff  
         
         return data
+
+class StaffRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email')
+
+    def create(self, validated_data):
+        # Criamos o usuário e já atribuímos o status de equipe (staff)
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            is_staff=True 
+        )
+        return user

@@ -1,6 +1,10 @@
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import RegisterView, OculosViewSet, ReservaViewSet, OculosPublicoViewSet, PasswordResetRequestView, PasswordResetConfirmView, AdminDashboardView, MyTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import (RegisterView, OculosViewSet, ReservaViewSet, 
+                    OculosPublicoViewSet, PasswordResetRequestView, 
+                    PasswordResetConfirmView, AdminDashboardView,
+                    MyTokenObtainPairView, CreateStaffView,
+                    PromoteToStaffByEmailView)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -15,5 +19,7 @@ urlpatterns = [
     path('password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin-dashboard/', AdminDashboardView.as_view(), name='admin_dashboard'),
+    path('admin/create-staff/', CreateStaffView.as_view(), name='create_staff'),
+    path('api/admin/promote-by-email/<str:email>/', PromoteToStaffByEmailView.as_view(), name='promote_staff_email'),
     path('', include(router.urls)),
 ]
