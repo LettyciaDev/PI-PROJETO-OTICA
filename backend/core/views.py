@@ -1,14 +1,20 @@
+from rest_framework import views
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer
+from .serializers import RegisterSerializer, OculosSerializer, ReservaSerializer, ReservaStatusSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from .models import Oculos, Reserva
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class RegisterView(generics.CreateAPIView):
@@ -24,6 +30,71 @@ class RegisterView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
+class PasswordResetRequestView(views.APIView):
+    permission_classes = [AllowAny]
+    serializer_class = PasswordResetRequestSerializer
+
+    @extend_schema(
+        summary="Solicitar recuperação de senha",
+        description="Envia um e-mail com UID e Token para o usuário.",
+        request={"application/json": {"type": "object", "properties": {"email": {"type": "string"}}}},
+        responses={200: {"description": "E-mail enviado com sucesso"}}
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.validated_data['email']
+        user = User.objects.filter(email=email).first()
+
+        # Por segurança, mesmo que o usuário não exista, retornamos 200
+        # para evitar "enumeração de e-mails" por atacantes.
+        if user:
+            # 1. Gera o UID (ID do usuário em Base64)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            
+            # 2. Gera o Token temporário (baseado no estado atual do usuário)
+            token = default_token_generator.make_token(user)
+            
+            # 3. Monta a URL para o seu FRONTEND
+            # Substitua 'seuapp.com' pela URL real do seu front (ex: localhost:3000)
+            reset_url = f"https://seuapp.com/reset-password/{uid}/{token}/"
+            
+            # 4. Envia o e-mail
+            subject = "Recuperação de Senha - Minha API"
+            message = f"Olá {user.username},\n\nVocê solicitou a alteração de senha. Clique no link abaixo para definir uma nova:\n{reset_url}\n\nSe você não solicitou isso, ignore este e-mail."
+            
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                return Response(
+                    {"error": "Erro ao enviar e-mail. Tente novamente mais tarde."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+        return Response({"detail": "E-mail de recuperação enviado."}, status=status.HTTP_200_OK)
+
+class PasswordResetConfirmView(views.APIView):
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        summary="Confirmar redefinição de senha",
+        description="Recebe o UID, Token e a Nova Senha para atualizar no banco.",
+        request=PasswordResetConfirmSerializer,
+        responses={200: {"description": "Senha alterada com sucesso"}}
+    )
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"detail": "Senha redefinida com sucesso."}, status=status.HTTP_200_OK)
+    
 # oculos/views.py
 class OculosViewSet(viewsets.ModelViewSet):
     queryset = Oculos.objects.all().order_by('-criado_em')

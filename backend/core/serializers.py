@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import Oculos, Reserva
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -19,6 +21,50 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
         return user
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            # Por segurança, algumas APIs preferem não informar que o email não existe,
+            # mas para uso interno/admin, é comum retornar o erro.
+            raise serializers.ValidationError("Não há usuário cadastrado com este e-mail.")
+        return value
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(
+        write_only=True, 
+        validators=[validate_password],
+        help_text="A nova senha deve atender aos requisitos de complexidade."
+    )
+
+    def validate(self, data):
+        try:
+            # Decodifica o ID do usuário vindo da URL (base64)
+            uid = urlsafe_base64_decode(data['uid']).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            raise serializers.ValidationError({"uid": "ID de usuário inválido."})
+
+        # Validação crucial: o token é válido para este usuário específico?
+        if not default_token_generator.check_token(user, data['token']):
+            raise serializers.ValidationError({"token": "Token inválido ou expirado."})
+
+        # Guardamos o usuário no contexto para usar no método save()
+        self.user = user
+        return data
+
+    def save(self):
+        # Atualiza a senha e limpa tokens antigos
+        self.user.set_password(self.validated_data['new_password'])
+        self.user.save()
+        return self.user 
+    
     
 # oculos/serializers.py
 class OculosSerializer(serializers.ModelSerializer):
