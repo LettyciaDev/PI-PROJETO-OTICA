@@ -36,12 +36,11 @@
 }
 
 .colunaImagem {
-  position: sticky;
   top: 88px;
+  align-self: center;
 }
 
 .imagemPrincipal {
-  position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: var(--radius);
@@ -54,8 +53,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  display: flex;
   transition: transform 0.4s ease;
+  align-items: center;
 }
 
 .imagemPrincipal:hover .imgOculos {
@@ -212,7 +212,7 @@
 
 .btnComprar {
   flex: 1;
-  background: var(--brand);
+  background: var(--marromTexto);
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
@@ -226,7 +226,7 @@
 }
 
 .btnComprar:hover {
-  background: #333;
+  background: #614a35;
   transform: translateY(-1px);
 }
 
