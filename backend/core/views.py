@@ -155,6 +155,13 @@ class ReservaViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(ReservaSerializer(reserva, context={'request': request}).data)
     
+    @action(detail=False, methods=['get'], url_path='minhas', permission_classes=[IsAuthenticated])
+    def minhas_reservas(self, request):
+        """GET /api/reservas/minhas/ — retorna só as reservas do usuário logado."""
+        reservas = Reserva.objects.filter(usuario=request.user)
+        serializer = ReservaSerializer(reservas, many=True, context={'request': request})
+        return Response(serializer.data)
+    
 # administrador
 class AdminDashboardView(views.APIView):
     permission_classes = [IsAdminUserOnly] # Apenas Staff
@@ -269,6 +276,13 @@ class ExameAgendamentoViewSet(viewsets.ModelViewSet):
             **ExameAgendamentoSerializer(exame, context={'request': request}).data,
             'whatsapp_url': self._gerar_link_whatsapp(exame)
         })
+    
+    @action(detail=False, methods=['get'], url_path='meus', permission_classes=[IsAuthenticated])
+    def meus_exames(self, request):
+        """GET /api/exames/meus/ — retorna só os exames do usuário logado."""
+        exames = ExameAgendamento.objects.filter(usuario=request.user)
+        serializer = ExameAgendamentoSerializer(exames, many=True, context={'request': request})
+        return Response(serializer.data)
 
     def _enviar_email_retorno(self, exame):
         from django.core.mail import send_mail
