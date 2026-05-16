@@ -81,7 +81,7 @@ export default function ProdutoCliente({ oculos }) {
             </div>
 
             <div className={styles.ctas}>
-              <button className={styles.btnComprar}>Adicionar à sacola</button>
+              <button className={styles.btnComprar}>Adicionar ao carrinho</button>
             </div>
           </div>
         </section>

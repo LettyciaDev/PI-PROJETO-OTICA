@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+.pagina {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f5ede0;
+  font-family: 'DM Sans', sans-serif;
+  padding: 40px 16px;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: #2c1f0e;
+  text-align: center;
+  margin: 0 0 28px 0;
+  letter-spacing: 0.01em;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 28px;
+  width: 100%;
+}
+
+.item {
+  background-color: #fdf6ee;
+  border: 1px solid #e8d9c5;
+  border-radius: 12px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.item:hover {
+  box-shadow: 0 4px 16px rgba(100, 60, 10, 0.1);
+  transform: translateY(-1px);
+}
+
+.iconeOculos {
+  width: 80px;
+  height: 80px;
+  background-color: #f0e4d0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.infoItem {
+  flex: 1;
+}
+
+.nomeItem {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #2c1f0e;
+  margin: 0 0 3px 0;
+}
+
+.detalhesItem {
+  font-size: 0.78rem;
+  color: #8a6e50;
+  font-weight: 300;
+  margin: 0;
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.botaoQtd {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #c8a882;
+  background: transparent;
+  color: #6b4c2a;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  line-height: 1;
+  padding: 0;
+}
+
+.botaoQtd:hover {
+  background-color: #6b4c2a;
+  color: #fdf6ee;
+  border-color: #6b4c2a;
+}
+
+.botaoQtd:active {
+  transform: scale(0.92);
+}
+
+.quantidade {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #2c1f0e;
+  min-width: 16px;
+  text-align: center;
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.botaoConfirmar {
+  background-color: #4a2c0a;
+  color: #fdf6ee;
+  border: none;
+  border-radius: 24px;
+  padding: 13px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.botaoConfirmar:hover {
+  background-color: #6b4c2a;
+  box-shadow: 0 6px 20px rgba(74, 44, 10, 0.35);
+  transform: translateY(-1px);
+}
+
+.botaoConfirmar:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
