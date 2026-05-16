@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer, 
-                          ReservaStatusSerializer, PasswordResetRequestSerializer, 
-                          PasswordResetConfirmSerializer, MyTokenObtainPairSerializer, 
-                          StaffRegistrationSerializer)
-from .models import Oculos, Reserva
+from .models import Oculos, Reserva, ExameAgendamento
+from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer,
+                          ReservaStatusSerializer, PasswordResetRequestSerializer,
+                          PasswordResetConfirmSerializer, MyTokenObtainPairSerializer,
+                          StaffRegistrationSerializer, ExameAgendamentoSerializer,
+                          ExameStatusSerializer)
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -21,6 +22,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .permissions import IsAdminUserOnly
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 
 class RegisterView(generics.CreateAPIView):
@@ -152,6 +155,13 @@ class ReservaViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(ReservaSerializer(reserva, context={'request': request}).data)
     
+    @action(detail=False, methods=['get'], url_path='minhas', permission_classes=[IsAuthenticated])
+    def minhas_reservas(self, request):
+        """GET /api/reservas/minhas/ — retorna só as reservas do usuário logado."""
+        reservas = Reserva.objects.filter(usuario=request.user)
+        serializer = ReservaSerializer(reservas, many=True, context={'request': request})
+        return Response(serializer.data)
+    
 # administrador
 class AdminDashboardView(views.APIView):
     permission_classes = [IsAdminUserOnly] # Apenas Staff
@@ -218,3 +228,98 @@ class PromoteToStaffByEmailView(views.APIView):
                 {"error": "Usuário com este e-mail não encontrado."}, 
                 status=status.HTTP_404_NOT_FOUND
             )
+
+def servir_arquivo_banco(request, pk):
+    """Serve um arquivo armazenado no PostgreSQL."""
+    from .models import ArquivoBanco
+    arquivo = get_object_or_404(ArquivoBanco, pk=pk)
+    response = HttpResponse(
+        bytes(arquivo.conteudo),
+        content_type=arquivo.content_type
+    )
+    response['Content-Disposition'] = f'inline; filename="{arquivo.nome}"'
+    return response
+
+class ExameAgendamentoViewSet(viewsets.ModelViewSet):
+    queryset = ExameAgendamento.objects.select_related('usuario').all()
+    serializer_class = ExameAgendamentoSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status', 'periodo_preferido']
+    search_fields = ['nome_cliente', 'usuario__username', 'usuario__email']
+    ordering_fields = ['criado_em', 'data_preferencia', 'status']
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated()]
+        return [IsAdminUser()]
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+    @action(detail=True, methods=['patch'], url_path='status', permission_classes=[IsAdminUser])
+    def atualizar_status(self, request, pk=None):
+        """
+        PATCH /api/exames/{id}/status/
+        Admin atualiza status, data confirmada e retorno ao cliente.
+        Dispara e-mail + link WhatsApp automaticamente.
+        """
+        exame = self.get_object()
+        serializer = ExameStatusSerializer(exame, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Envia e-mail se houver retorno ao cliente
+        if request.data.get('retorno_cliente'):
+            self._enviar_email_retorno(exame)
+
+        return Response({
+            **ExameAgendamentoSerializer(exame, context={'request': request}).data,
+            'whatsapp_url': self._gerar_link_whatsapp(exame)
+        })
+    
+    @action(detail=False, methods=['get'], url_path='meus', permission_classes=[IsAuthenticated])
+    def meus_exames(self, request):
+        """GET /api/exames/meus/ — retorna só os exames do usuário logado."""
+        exames = ExameAgendamento.objects.filter(usuario=request.user)
+        serializer = ExameAgendamentoSerializer(exames, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def _enviar_email_retorno(self, exame):
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        assunto = f"Atualização do seu agendamento de exame — #{exame.pk}"
+        mensagem = (
+            f"Olá {exame.nome_cliente},\n\n"
+            f"Seu agendamento foi atualizado.\n"
+            f"Status: {exame.get_status_display()}\n"
+            f"Data confirmada: {exame.data_confirmada or 'A definir'}\n\n"
+            f"Mensagem da ótica:\n{exame.retorno_cliente}\n\n"
+            f"Em caso de dúvidas, entre em contato conosco."
+        )
+        try:
+            send_mail(
+                assunto,
+                mensagem,
+                settings.DEFAULT_FROM_EMAIL,
+                [exame.usuario.email],
+                fail_silently=False,
+            )
+        except Exception:
+            pass  # Loga silenciosamente; não quebra a resposta da API
+
+    def _gerar_link_whatsapp(self, exame):
+        import urllib.parse
+        numero = ''.join(filter(str.isdigit, exame.telefone_whatsapp))
+        if len(numero) == 11:  # DDD + número brasileiro
+            numero = f"55{numero}"
+
+        mensagem = (
+            f"Olá {exame.nome_cliente}! "
+            f"Seu agendamento de exame (#{exame.pk}) foi atualizado.\n"
+            f"Status: {exame.get_status_display()}\n"
+            f"Data confirmada: {exame.data_confirmada or 'A definir'}\n\n"
+            f"{exame.retorno_cliente}"
+        )
+        mensagem_encoded = urllib.parse.quote(mensagem)
+        return f"https://wa.me/{numero}?text={mensagem_encoded}"

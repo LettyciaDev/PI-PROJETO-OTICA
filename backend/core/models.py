@@ -2,6 +2,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import os
+from .db_storage import DatabaseStorage
+
+db_storage = DatabaseStorage()
+
+class ArquivoBanco(models.Model):
+    nome = models.CharField(max_length=255)
+    conteudo = models.BinaryField()
+    content_type = models.CharField(max_length=100)
+    tamanho = models.IntegerField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'arquivos_banco'
+        verbose_name = 'Arquivo no Banco'
+
+    def __str__(self):
+        return f"{self.nome} ({self.tamanho} bytes)"
 
 class Oculos(models.Model):
     MARCAS_CHOICES = [
@@ -48,12 +65,31 @@ class Oculos(models.Model):
     medida_haste = models.IntegerField()
     preco = models.DecimalField(max_digits=8, decimal_places=2)
     quantidade_estoque = models.IntegerField(default=0)
+    imagem = models.ImageField(storage=db_storage, upload_to='oculos/', null=True, blank=True, verbose_name='Imagem do produto')
     criado_em = models.DateTimeField(auto_now_add=True)
 
+    def gerar_slug_unico(self):
+        slug_base = slugify(self.nome)
+        slug = slug_base
+        contador = 1
+        while Oculos.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+            slug = f"{slug_base}-{contador}"
+            contador += 1
+        return slug
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.nome)
+        if not self.slug or self._slug_precisa_atualizar():
+            self.slug = self.gerar_slug_unico()
         super().save(*args, **kwargs)
+
+    def _slug_precisa_atualizar(self):
+        if not self.pk:
+            return True
+        try:
+            original = Oculos.objects.get(pk=self.pk)
+            return original.nome != self.nome
+        except Oculos.DoesNotExist:
+            return True
     
     def __str__(self):
         return f"{self.nome} - {self.marca}"
@@ -72,38 +108,15 @@ class Reserva(models.Model):
         ('cancelada',  'Cancelada'),
     ]
 
-    usuario = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='reservas'
-    )
-
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservas')
     oculos = models.ForeignKey('core.Oculos', on_delete=models.SET_NULL, null=True, related_name='reservas')
-    
-    oculos_snapshot = models.JSONField(
-        verbose_name='Snapshot do óculos',
-        help_text='Cópia de todos os dados do óculos no momento da reserva.'
-    )
-
+    oculos_snapshot = models.JSONField(verbose_name='Snapshot do óculos', help_text='Cópia de todos os dados do óculos no momento da reserva.')
     nome_cliente = models.CharField(max_length=150, verbose_name='Nome completo')
     telefone_whatsapp = models.CharField(max_length=20, verbose_name='WhatsApp')
-    receita = models.FileField(
-        upload_to=receita_upload_path,
-        verbose_name='Receita do exame de vista',
-        help_text='Aceita JPG, PNG, PDF ou DOCX.'
-    )
+    receita = models.FileField(storage=db_storage, upload_to=receita_upload_path, verbose_name='Receita do exame de vista', help_text='Aceita JPG, PNG, PDF ou DOCX.')
     observacoes = models.TextField(blank=True, verbose_name='Observações')
-
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pendente'
-    )
-    observacoes_admin = models.TextField(
-        blank=True,
-        verbose_name='Observações internas (admin)'
-    )
-
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    observacoes_admin = models.TextField(blank=True, verbose_name='Observações internas (admin)')
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
@@ -114,3 +127,43 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f"Reserva #{self.pk} — {self.nome_cliente} ({self.get_status_display()})"
+
+class ExameAgendamento(models.Model):
+    PERIODO_CHOICES = [
+        ('manha', 'Manhã'),
+        ('tarde', 'Tarde'),
+        ('qualquer', 'Qualquer horário'),
+    ]
+
+    STATUS_CHOICES = [
+        ('pendente',   'Pendente'),
+        ('confirmado', 'Confirmado'),
+        ('concluido',  'Concluído'),
+        ('cancelado',  'Cancelado'),
+    ]
+
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='exames')
+
+    # Dados do cliente
+    nome_cliente = models.CharField(max_length=150, verbose_name='Nome completo')
+    telefone_whatsapp = models.CharField(max_length=20, verbose_name='WhatsApp')
+    convenio = models.CharField(max_length=100, blank=True, verbose_name='Convênio', help_text='Opcional')
+    # Preferências de agendamento
+    data_preferencia = models.DateField(verbose_name='Data de preferência')
+    periodo_preferido = models.CharField(max_length=10, choices=PERIODO_CHOICES, default='qualquer', verbose_name='Período preferido')
+    observacoes = models.TextField(blank=True, verbose_name='Observações / motivo do exame')
+    # Controle interno da ótica
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    data_confirmada = models.DateTimeField(null=True, blank=True, verbose_name='Data e hora confirmada pela ótica')
+    observacoes_admin = models.TextField(blank=True,verbose_name='Observações internas (admin)')
+    retorno_cliente = models.TextField(blank=True, verbose_name='Mensagem de retorno ao cliente')
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-criado_em']
+        verbose_name = 'Agendamento de Exame'
+        verbose_name_plural = 'Agendamentos de Exame'
+
+    def __str__(self):
+        return f"Exame #{self.pk} — {self.nome_cliente} ({self.get_status_display()})"
