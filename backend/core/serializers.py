@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import Oculos, Reserva
+from .models import Oculos, Reserva, ExameAgendamento
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -196,3 +197,39 @@ class StaffRegistrationSerializer(serializers.ModelSerializer):
             is_staff=True 
         )
         return user
+    
+class ExameAgendamentoSerializer(serializers.ModelSerializer):
+    usuario_detalhe = UsuarioResumoSerializer(source='usuario', read_only=True)
+
+    class Meta:
+        model = ExameAgendamento
+        fields = '__all__'
+        read_only_fields = ['criado_em', 'atualizado_em', 'usuario',
+                            'status', 'data_confirmada', 'observacoes_admin', 'retorno_cliente']
+
+    def validate_data_preferencia(self, value):
+        from django.utils import timezone
+        if value < timezone.now().date():
+            raise serializers.ValidationError("A data de preferência não pode ser no passado.")
+        return value
+
+    def validate_telefone_whatsapp(self, value):
+        import re
+        # Aceita formatos: (81) 99999-9999 ou 81999999999
+        limpo = re.sub(r'\D', '', value)
+        if len(limpo) < 10 or len(limpo) > 11:
+            raise serializers.ValidationError("Informe um número de WhatsApp válido com DDD.")
+        return value
+
+
+class ExameStatusSerializer(serializers.ModelSerializer):
+    """Usado exclusivamente pelo admin para atualizar status, data confirmada e retorno."""
+    class Meta:
+        model = ExameAgendamento
+        fields = ['status', 'data_confirmada', 'observacoes_admin', 'retorno_cliente']
+
+    def validate_status(self, value):
+        VALIDOS = [s[0] for s in ExameAgendamento.STATUS_CHOICES]
+        if value not in VALIDOS:
+            raise serializers.ValidationError(f"Status inválido. Opções: {VALIDOS}")
+        return value
