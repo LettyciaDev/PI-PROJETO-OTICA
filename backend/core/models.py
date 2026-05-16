@@ -57,15 +57,12 @@ class Oculos(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     marca = models.CharField(max_length=50, choices=MARCAS_CHOICES, default='outro')
     material = models.CharField(max_length=50, choices=MATERIAL_CHOICES, default='outro')
-    cor = models.CharField(max_length=50)
     formato = models.CharField(max_length=50, choices=FORMATO_CHOICES, default='outro')
     genero = models.CharField(max_length=50, choices=GENERO_CHOICES)
     medida_aro = models.IntegerField()
     medida_ponte = models.IntegerField()
     medida_haste = models.IntegerField()
     preco = models.DecimalField(max_digits=8, decimal_places=2)
-    quantidade_estoque = models.IntegerField(default=0)
-    imagem = models.ImageField(storage=db_storage, upload_to='oculos/', null=True, blank=True, verbose_name='Imagem do produto')
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def gerar_slug_unico(self):
@@ -92,9 +89,40 @@ class Oculos(models.Model):
             return True
     
     def __str__(self):
-        return f"{self.nome} - {self.marca}"
+        return f"{self.nome} - {self.get_marca_display()}"
 
-# reservas/models.py
+
+class OculosVarianteCor(models.Model):
+
+    oculos = models.ForeignKey(Oculos, on_delete=models.CASCADE, related_name='variantes')
+    cor = models.CharField(max_length=50, verbose_name="Cor da Armação/Lente")
+    quantidade_estoque = models.IntegerField(default=0, verbose_name="Estoque desta cor")
+
+    preco_adicional = models.DecimalField(max_digits=8, decimal_places=2, default=0.00, verbose_name="Preço adicional")
+
+    class Meta:
+        unique_together = ('oculos', 'cor')
+        verbose_name = "Variante de Cor"
+        verbose_name_plural = "Variantes de Cores"
+
+    def __str__(self):
+        return f"{self.oculos.nome} - Cor: {self.cor}"
+
+
+class OculosImagem(models.Model):
+
+    variante = models.ForeignKey(OculosVarianteCor, on_delete=models.CASCADE, related_name='imagens')
+    imagem = models.ImageField(storage=db_storage, upload_to='oculos/', verbose_name='Imagem do produto')
+    
+    e_principal = models.BooleanField(default=False, verbose_name="Imagem Principal da Cor")
+
+    class Meta:
+        verbose_name = "Imagem da Variante"
+        verbose_name_plural = "Imagens da Variante"
+
+    def __str__(self):
+        return f"Foto ({self.variante.cor}) - {self.variante.oculos.nome}"
+
 def receita_upload_path(instance, filename):
     """Salva em: media/receitas/usuario_<user_id>/<filename>"""
     return os.path.join('receitas', f'usuario_{instance.usuario.id}', filename)
