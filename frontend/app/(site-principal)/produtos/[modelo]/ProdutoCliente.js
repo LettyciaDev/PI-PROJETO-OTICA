@@ -23,6 +23,7 @@ export default function ProdutoCliente({ oculos }) {
     setLentes((prev) => ({ ...prev, [nome]: !prev[nome] }));
 
   const capitalize = (texto) => {
+    if (!texto) return ""; 
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   };
 
