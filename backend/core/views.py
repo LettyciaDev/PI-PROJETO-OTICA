@@ -111,7 +111,7 @@ class OculosViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
 class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Oculos.objects.all().order_by('-criado_em')
+    queryset = Oculos.objects.prefetch_related('variantes__imagens').order_by('-criado_em')
     serializer_class = OculosSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
@@ -119,11 +119,13 @@ class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['GET'])
 def oculos_detalhe(request, slug):
     try:
-        oculos = Oculos.objects.get(slug=slug)
+        oculos = Oculos.objects.prefetch_related(
+            'variantes__imagens'          
+        ).get(slug=slug)
     except Oculos.DoesNotExist:
         return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = OculosSerializer(oculos)
+ 
+    serializer = OculosSerializer(oculos, context={'request': request})  
     return Response(serializer.data)
 
 class ReservaViewSet(viewsets.ModelViewSet):

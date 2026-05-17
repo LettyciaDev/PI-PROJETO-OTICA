@@ -21,3 +21,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+::selection {
+  background-color: var(--marromTexto);
+  color: var(--bg); 
+}
