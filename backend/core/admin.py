@@ -75,8 +75,13 @@ class ExameAgendamentoAdmin(admin.ModelAdmin):
                     'periodo_preferido', 'status', 'criado_em']
     list_filter = ['status', 'periodo_preferido']
     search_fields = ['nome_cliente', 'telefone_whatsapp', 'usuario__username']
-    readonly_fields = ['criado_em', 'atualizado_em', 'usuario']
+    readonly_fields = ['criado_em', 'atualizado_em']
     list_editable = ['status']
+
+    def save_model(self, request, obj, form, change):
+        if not obj.usuario_id:
+            obj.usuario = request.user
+        super().save_model(request, obj, form, change)
 
     fieldsets = (
         ('Cliente', {
