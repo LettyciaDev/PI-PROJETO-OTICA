@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento
+from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento, ItemCarrinho
 
 
 class OculosImagemInline(admin.TabularInline):
@@ -95,3 +95,5 @@ class ExameAgendamentoAdmin(admin.ModelAdmin):
                        'retorno_cliente', 'criado_em', 'atualizado_em')
         }),
     )
+    
+admin.site.register(ItemCarrinho)

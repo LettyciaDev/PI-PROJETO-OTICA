@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento
+from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento, ItemCarrinho
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -119,6 +119,13 @@ class OculosSerializer(serializers.ModelSerializer):
             if data.get(campo, 0) <= 0:
                 raise serializers.ValidationError({campo: "A medida deve ser maior que zero."})
         return data
+
+# serializer do CARRINHO!
+class ItemCarrinhoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCarrinho
+        fields = '__all__'
+        read_only_fields = ['usuario', 'adicionado_em']
 
 EXTENSOES_PERMITIDAS = ['.jpg', '.jpeg', '.png', '.pdf', '.docx']
 

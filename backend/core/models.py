@@ -123,6 +123,29 @@ class OculosImagem(models.Model):
     def __str__(self):
         return f"Foto ({self.variante.cor}) - {self.variante.oculos.nome}"
 
+# model do CARRINHO!
+
+class ItemCarrinho(models.Model):
+    usuario     = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carrinho')
+    oculos      = models.ForeignKey(Oculos, on_delete=models.SET_NULL, null=True)
+    slug        = models.CharField(max_length=120)
+    nome        = models.CharField(max_length=100)
+    marca       = models.CharField(max_length=50)
+    cor         = models.CharField(max_length=50)
+    lentes      = models.JSONField(default=list)
+    quantidade  = models.PositiveIntegerField(default=1)
+    preco_unit  = models.DecimalField(max_digits=8, decimal_places=2)
+    imagem      = models.TextField(blank=True)
+    adicionado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'oculos', 'cor')
+        ordering = ['-adicionado_em']
+
+    def __str__(self):
+        return f"{self.usuario.username} — {self.nome} ({self.cor})"
+
+
 def receita_upload_path(instance, filename):
     """Salva em: media/receitas/usuario_<user_id>/<filename>"""
     return os.path.join('receitas', f'usuario_{instance.usuario.id}', filename)
