@@ -31,26 +31,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             first_name = ""
             last_name = ""
 
-<<<<<<< HEAD
-=======
-            if full_name:
-                # Divide no primeiro espaço encontrado
-                name_parts = full_name.split(' ', 1)
-                first_name = name_parts[0]
-                # Se houver sobrenome, atribui; se não, mantém vazio
-                last_name = name_parts[1] if len(name_parts) > 1 else ''
-
-            # Cria o usuário garantindo que apenas campos válidos do Django entrem aqui
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                email=validated_data['email'],
-                password=validated_data['password'],
-                first_name=first_name,
-                last_name=last_name
-            )
-            return user
-
->>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -233,25 +213,11 @@ class StaffRegistrationSerializer(serializers.ModelSerializer):
         fields = ('username', 'password', 'email', 'full_name')
 
     def create(self, validated_data):
-<<<<<<< HEAD
-=======
-        full_name = validated_data.pop('full_name', '').strip()
-        name_parts = full_name.split(' ', 1)
-        first_name = name_parts[0]
-        last_name = name_parts[1] if len(name_parts) > 1 else ''
-
->>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-<<<<<<< HEAD
             is_staff=True
-=======
-            first_name=first_name,
-            last_name=last_name,
-            is_staff=True # Continua a definir como Staff automaticamente
->>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
         )
         return user
 
