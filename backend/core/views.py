@@ -10,7 +10,7 @@ from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerialize
                           ReservaStatusSerializer, PasswordResetRequestSerializer,
                           PasswordResetConfirmSerializer, MyTokenObtainPairSerializer,
                           StaffRegistrationSerializer, ExameAgendamentoSerializer,
-                          ExameStatusSerializer)
+                          ExameStatusSerializer, EmailTokenObtainPairSerializer)
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -25,6 +25,30 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
+
+class EmailLoginView(TokenObtainPairView):
+    serializer_class = EmailTokenObtainPairSerializer
+
+    @extend_schema(
+        summary="Fazer login com E-mail",
+        description="Gera os tokens JWT (Access e Refresh) e retorna o status de Staff do usuário utilizando E-mail e Senha.",
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "refresh": {"type": "string"},
+                    "access": {"type": "string"},
+                    "username": {"type": "string"},
+                    "email": {"type": "string"},
+                    "is_staff": {"type": "boolean"}
+                }
+              }
+        },
+        tags=['Autenticação']
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+    
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

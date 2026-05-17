@@ -5,24 +5,52 @@ from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgend
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from django.contrib.auth import authenticate
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     email = serializers.EmailField(required=True)
+    # Adicionamos o campo full_name (apenas para receber do front)
+    full_name = serializers.CharField(write_only=True, required=True, max_length=150)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')
+        # Adicione 'full_name' aos campos aceitos
+        fields = ('username', 'password', 'email', 'full_name')
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Este e-mail já está cadastrado.")
+        return value
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-        )
-        return user
+            # Remove o full_name dos dados validados com segurança
+            full_name = validated_data.pop('full_name', '').strip()
+            
+            # Inicializa as variáveis vazias
+            first_name = ""
+            last_name = ""
 
+<<<<<<< HEAD
+=======
+            if full_name:
+                # Divide no primeiro espaço encontrado
+                name_parts = full_name.split(' ', 1)
+                first_name = name_parts[0]
+                # Se houver sobrenome, atribui; se não, mantém vazio
+                last_name = name_parts[1] if len(name_parts) > 1 else ''
+
+            # Cria o usuário garantindo que apenas campos válidos do Django entrem aqui
+            user = User.objects.create_user(
+                username=validated_data['username'],
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=first_name,
+                last_name=last_name
+            )
+            return user
+
+>>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
@@ -198,17 +226,32 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class StaffRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     email = serializers.EmailField(required=True)
+    full_name = serializers.CharField(write_only=True, required=True, max_length=150)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')
+        fields = ('username', 'password', 'email', 'full_name')
 
     def create(self, validated_data):
+<<<<<<< HEAD
+=======
+        full_name = validated_data.pop('full_name', '').strip()
+        name_parts = full_name.split(' ', 1)
+        first_name = name_parts[0]
+        last_name = name_parts[1] if len(name_parts) > 1 else ''
+
+>>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
+<<<<<<< HEAD
             is_staff=True
+=======
+            first_name=first_name,
+            last_name=last_name,
+            is_staff=True # Continua a definir como Staff automaticamente
+>>>>>>> 069ce60abc9556f40c0461de8dd3f67efa1ee0b5
         )
         return user
 
@@ -246,3 +289,51 @@ class ExameStatusSerializer(serializers.ModelSerializer):
         if value not in VALIDOS:
             raise serializers.ValidationError(f"Status inválido. Opções: {VALIDOS}")
         return value
+
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # Definimos explicitamente que o identificador é o e-mail
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove o campo username padrão para não confundir o Swagger/Front
+        if 'username' in self.fields:
+            del self.fields['username']
+
+    def validate(self, attrs):
+        # Captura os dados brutos enviados no JSON
+        email_input = attrs.get("email")
+        password_input = attrs.get("password")
+
+        # Forçamos o authenticate a receber o e-mail tanto no parâmetro username
+        # quanto no parâmetro email, para funcionar com qualquer configuração de backend
+        user = authenticate(
+            request=self.context.get('request'), 
+            username=email_input, 
+            email=email_input, 
+            password=password_input
+        )
+
+        if not user:
+            raise serializers.ValidationError({"detail": "E-mail ou senha incorretos."})
+
+        if not user.is_active:
+            raise serializers.ValidationError({"detail": "Esta conta está desativada."})
+
+        # Define o usuário na instância para o Simple JWT gerar os tokens de acesso
+        self.user = user
+        
+        # Gera os tokens padrão (access e refresh)
+        data = {}
+        refresh = self.get_token(self.user)
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        # Retorna os dados extras que seu front-end precisa
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        data['is_staff'] = self.user.is_staff
+        data['full_name'] = f"{self.user.first_name} {self.user.last_name}".strip()
+
+        return data
