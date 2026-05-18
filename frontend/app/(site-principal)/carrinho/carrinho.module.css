@@ -5,8 +5,6 @@
   box-sizing: border-box;
 }
 
-/* ── SEÇÃO 1: lista de óculos ── */
-
 .secaoLista {
   width: 100%;
   padding: 48px 48px 32px 48px;
@@ -155,17 +153,12 @@
   box-shadow: none;
 }
 
-/* ── SEÇÃO 2: formulário abaixo ── */
-
-/* container que envolve os dois painéis */
 .painelDuplo {
   display: flex;
   gap: 24px;
   width: 100%;
   align-items: center;
 }
-
-/* ── PAINEL ESQUERDO: resumo ── */
 
 .painelResumo {
   background-color: #f0e4d0;
@@ -234,7 +227,7 @@
   color: var(--marromTexto);
   white-space: nowrap;
   flex-shrink: 0;
-  font-family: 'Jomolhari', serif
+  font-family: 'Jomolhari', sans-serif
 }
 
 .vazio {
