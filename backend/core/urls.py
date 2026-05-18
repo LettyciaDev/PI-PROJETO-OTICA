@@ -4,7 +4,8 @@ from .views import (RegisterView, OculosViewSet, ReservaViewSet,
                     OculosPublicoViewSet, PasswordResetRequestView, 
                     PasswordResetConfirmView, AdminDashboardView,
                     MyTokenObtainPairView, CreateStaffView, EmailLoginView,
-                    PromoteToStaffByEmailView, ExameAgendamentoViewSet)
+                    PromoteToStaffByEmailView, ExameAgendamentoViewSet, 
+                    CarrinhoViewSet)
 from rest_framework.routers import DefaultRouter
 from .views import servir_arquivo_banco
 
@@ -13,6 +14,7 @@ router.register(r'oculos', OculosViewSet, basename='oculos')
 router.register(r'reservas', ReservaViewSet, basename='reservas')
 router.register(r'produtos', OculosPublicoViewSet, basename='produtos')
 router.register(r'exames', ExameAgendamentoViewSet, basename='exames')
+router.register(r'carrinho', CarrinhoViewSet, basename='carrinho')
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth_register'),

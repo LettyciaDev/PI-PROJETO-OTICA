@@ -5,12 +5,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .models import Oculos, Reserva, ExameAgendamento
+from .models import Oculos, Reserva, ExameAgendamento, ItemCarrinho
 from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer,
                           ReservaStatusSerializer, PasswordResetRequestSerializer,
                           PasswordResetConfirmSerializer, MyTokenObtainPairSerializer,
                           StaffRegistrationSerializer, ExameAgendamentoSerializer,
-                          ExameStatusSerializer, EmailTokenObtainPairSerializer)
+                          ExameStatusSerializer, EmailTokenObtainPairSerializer, 
+                          ItemCarrinhoSerializer)
 from rest_framework.decorators import action, api_view
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -135,7 +136,7 @@ class OculosViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
 class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Oculos.objects.all().order_by('-criado_em')
+    queryset = Oculos.objects.prefetch_related('variantes__imagens').order_by('-criado_em')
     serializer_class = OculosSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
@@ -143,12 +144,41 @@ class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['GET'])
 def oculos_detalhe(request, slug):
     try:
-        oculos = Oculos.objects.get(slug=slug)
+        oculos = Oculos.objects.prefetch_related(
+            'variantes__imagens'          
+        ).get(slug=slug)
     except Oculos.DoesNotExist:
         return Response({'erro': 'Produto não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = OculosSerializer(oculos)
+ 
+    serializer = OculosSerializer(oculos, context={'request': request})  
     return Response(serializer.data)
+
+class CarrinhoViewSet(viewsets.ModelViewSet):
+    serializer_class = ItemCarrinhoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ItemCarrinho.objects.filter(usuario=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        oculos_id = request.data.get('oculos')
+        cor = request.data.get('cor', '')
+
+        existente = ItemCarrinho.objects.filter(
+            usuario=request.user,
+            oculos_id=oculos_id,
+            cor=cor,
+        ).first()
+
+        if existente:
+            existente.quantidade += int(request.data.get('quantidade', 1))
+            existente.save()
+            return Response(ItemCarrinhoSerializer(existente).data)
+
+        return super().create(request, *args, **kwargs)
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.select_related('usuario', 'oculos').all()

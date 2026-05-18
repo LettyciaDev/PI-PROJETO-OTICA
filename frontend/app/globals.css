@@ -11,7 +11,7 @@
 
 :root {
   --navbar:#9B5C42;
-  --bg: #F5F1EC;
+  --bg: #f3ebe2;
   --marromTexto: #4B3220;
 }
 
@@ -20,4 +20,9 @@ html, body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--marromTexto);
+  color: var(--bg); 
 }
