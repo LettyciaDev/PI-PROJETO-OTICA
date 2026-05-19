@@ -155,30 +155,33 @@ def oculos_detalhe(request, slug):
 
 class CarrinhoViewSet(viewsets.ModelViewSet):
     serializer_class = ItemCarrinhoSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # voltou
 
     def get_queryset(self):
-        return ItemCarrinho.objects.filter(usuario=self.request.user)
+        return ItemCarrinho.objects.filter(usuario=self.request.user)  # voltou
 
     def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)
+        serializer.save(usuario=self.request.user)  # voltou
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         oculos_id = request.data.get('oculos')
         cor = request.data.get('cor', '')
 
         existente = ItemCarrinho.objects.filter(
-            usuario=request.user,
+            usuario=request.user,  # voltou
             oculos_id=oculos_id,
             cor=cor,
         ).first()
-
+    
         if existente:
             existente.quantidade += int(request.data.get('quantidade', 1))
             existente.save()
             return Response(ItemCarrinhoSerializer(existente).data)
 
-        return super().create(request, *args, **kwargs)
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.select_related('usuario', 'oculos').all()

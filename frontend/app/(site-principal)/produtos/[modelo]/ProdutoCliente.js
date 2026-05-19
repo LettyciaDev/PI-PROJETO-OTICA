@@ -2,6 +2,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./produtos.module.css";
+import { authHeaders } from '@/lib/api';
 
 // ─────────────────────────────────────────────────────────
 //  UTILITÁRIOS
@@ -69,14 +70,9 @@ const capitalize = (texto) => {
 //  CARRINHO
 // ─────────────────────────────────────────────────────────
 async function adicionarAoCarrinho(item) {
-  const token = localStorage.getItem("access");
-
-  const res = await fetch("http://localhost:8000/api/carrinho/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
+  const res = await fetch('http://localhost:8000/api/carrinho/', {
+    method: 'POST',
+    headers: authHeaders(),
     body: JSON.stringify({
       oculos:     item.oculosId,
       slug:       item.slug,
@@ -89,7 +85,6 @@ async function adicionarAoCarrinho(item) {
       imagem:     item.imagem,
     }),
   });
-
   return res.ok;
 }
 
