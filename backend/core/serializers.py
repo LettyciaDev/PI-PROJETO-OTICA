@@ -10,12 +10,10 @@ from django.contrib.auth import authenticate
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     email = serializers.EmailField(required=True)
-    # Adicionamos o campo full_name (apenas para receber do front)
     full_name = serializers.CharField(write_only=True, required=True, max_length=150)
 
     class Meta:
         model = User
-        # Adicione 'full_name' aos campos aceitos
         fields = ('username', 'password', 'email', 'full_name')
 
     def validate_email(self, value):
@@ -24,12 +22,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-            # Remove o full_name dos dados validados com segurança
-            full_name = validated_data.pop('full_name', '').strip()
-            
-            # Inicializa as variáveis vazias
-            first_name = ""
-            last_name = ""
+        # 1. Remove full_name from validated_data safely
+        full_name = validated_data.pop('full_name', '').strip()
+        
+        # 2. Logic to split full_name into first_name and last_name
+        first_name = ""
+        last_name = ""
+        if full_name:
+            parts = full_name.split(' ', 1)
+            first_name = parts[0]
+            if len(parts) > 1:
+                last_name = parts[1]
+
+        # 3. Use create_user so the password gets properly hashed
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            first_name=first_name,
+            last_name=last_name
+        )
+        
+        # 4. CRITICAL: Return the created user instance
+        return user
 
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
