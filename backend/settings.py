@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'corsheaders',
     'backend.core',
+    'django_apscheduler',
 ]
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
