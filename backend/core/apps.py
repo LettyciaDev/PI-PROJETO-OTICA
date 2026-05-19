@@ -21,4 +21,6 @@ class CoreConfig(AppConfig):
             replace_existing=True,
         )
 
+       
         scheduler.start()
+        

@@ -1,0 +1,144 @@
+.container {
+  min-height: 100vh;
+  background-color: #9B5C42;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+  background-color: #f5f0ea;
+  border-radius: 16px;
+  width: 860px;
+  min-height: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.formSide {
+  flex: 1;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 1.6rem;
+  color: #7a3e1e;
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+
+.label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: #7a3e1e;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: #7a3e1e;
+  border: none;
+  border-radius: 6px;
+  color: #f5f0ea;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #d9b89a;
+}
+
+.input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #7a3e1e inset;
+  -webkit-text-fill-color: #f5f0ea;
+}
+
+.forgot {
+  font-size: 0.75rem;
+  color: #7a3e1e;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  border: 1.5px solid #7a3e1e;
+  border-radius: 6px;
+  color: #7a3e1e;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.2s;
+}
+
+.button:hover {
+  background-color: #7a3e1e;
+  color: #f5f0ea;
+}
+
+.redirect {
+  font-size: 0.85rem;
+  color: #7a3e1e;
+  text-align: center;
+}
+
+.link {
+  color: #7a3e1e;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.imageSide {
+  width: 320px;
+  position: relative;
+  flex-shrink: 0;
+  animation: deslizarDireita 0.6s ease;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.logoOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+}
+
+.logo {
+  width: 150px;
+}
+
+@keyframes deslizarDireita {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
