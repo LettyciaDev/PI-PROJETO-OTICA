@@ -116,7 +116,14 @@ export default function Page() {
     alert(`Reserva confirmada por 48h!\n\nCliente: ${nome}\nTelefone: ${telefone}\nData: ${data} às ${horario}\n\nÓculos:\n${itens}${observacao ? `\n\nObservações: ${observacao}` : ''}`);
   }
 
-  if (carregando) return <p style={{ padding: 32 }}>Carregando carrinho...</p>;
+  if (carregando) {
+    return (
+      <div className={styles.containerCarregando}>
+        <div className={styles.spinner}></div>
+        <p className={styles.textoCarregando}>Buscando suas escolhas...</p>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pagina}>

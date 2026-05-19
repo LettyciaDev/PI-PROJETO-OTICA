@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap');
+
 .navbar{
     background-color: rgba(155, 92, 66, 0.95);
     display: flex;
@@ -45,11 +47,22 @@
     font-size: 18px;
     display: flex;
     align-items: center;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.12em;
     white-space: nowrap;
 }
 
 .linkNav:hover{
+    color:#D4A373;
+}
+
+.meuNome{
+    color: var(--bg);
+    font-family: "Joan", serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.meuNome:hover{
     color:#D4A373;
 }
 
@@ -59,6 +72,12 @@
     gap: 15px;
     justify-content: flex-end;
     align-items: center;
+}
+
+.usuarioWrapper {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .linkNavIcone {

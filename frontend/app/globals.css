@@ -13,11 +13,25 @@
   --navbar:#9B5C42;
   --bg: #f3ebe2;
   --marromTexto: #4B3220;
+  --surface: #ffffff;
+  --border: #e2dbd3;
+  --text-muted: #9e9790;
+  --brown: #8b5e3c;
+  --brown-dark: #6b4628;
+  --brown-light: #f0e8e0;
+  --gold: #c8860a;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.09);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
 }
 
 html, body {
   background: var(--bg);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

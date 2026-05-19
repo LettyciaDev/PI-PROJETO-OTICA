@@ -363,3 +363,44 @@
   background-color: #6b3a1f;
   color: #fdf6ee;
 }
+
+/* circulozinho q gira */
+.containerCarregando {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg);
+  z-index: 9999;
+  gap: 1.2rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(0, 0, 0, 0.1); 
+  border-top: 4px solid var(--marromTexto, #8b5a2b); 
+  border-radius: 50%;
+  animation: girar 1s linear infinite;
+}
+
+.textoCarregando {
+  font-family: 'Poppins', sans-serif;
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+@keyframes girar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -2,7 +2,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./produtos.module.css";
-import { authHeaders } from '@/lib/api';
+import { authHeaders } from '../../../lib/api';
 
 // ─────────────────────────────────────────────────────────
 //  UTILITÁRIOS
