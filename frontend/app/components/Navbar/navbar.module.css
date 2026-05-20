@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Forum&display=swap');
 
 .navbar{
     background-color: rgba(155, 92, 66, 0.95);
@@ -26,15 +26,16 @@
 }
 
 .logo{
-    height: 73px;
+    height: 70px;
     width: auto;
     object-fit: contain; 
     cursor: pointer;
+    padding-left: 20px;
 }
 
 .centro{
     display: flex;
-    gap: 35px;
+    gap: 45px;
     flex: 1;
     justify-content: center;
     align-items: center;
@@ -43,8 +44,8 @@
 .linkNav{
     color: var(--bg);
     text-decoration: none;
-    font-family: "Joan", serif;
-    font-size: 18px;
+    font-family: "Forum", serif;
+    font-size: 21px;
     display: flex;
     align-items: center;
     letter-spacing: 0.12em;
@@ -57,13 +58,9 @@
 
 .meuNome{
     color: var(--bg);
-    font-family: "Joan", serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
+    font-family: "Forum", serif;
+    font-size: 1.3rem;
 
-.meuNome:hover{
-    color:#D4A373;
 }
 
 .direita{
