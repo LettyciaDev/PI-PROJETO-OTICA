@@ -73,9 +73,3 @@ Esses registros estão organizados na pasta `REGISTROS`.
 
 ---
 
-
-(Adicionar nomes e funções dos integrantes futuramente)
-
-
-
-(links serão adicionados futuramente)
