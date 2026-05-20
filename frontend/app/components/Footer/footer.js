@@ -7,7 +7,7 @@ export default function Footer(){
         <div className={styles.meio}>
             <div className={styles.vizzo}>
                 <span>VIZZO ÓTICA</span>
-                <p>Especialistas em saúde ocular e óculos premium desde 2014. 
+                <p>Especialistas em saúde ocular e óculos.
                     Encontre o óculos perfeito para você.
                 </p>
             </div>
