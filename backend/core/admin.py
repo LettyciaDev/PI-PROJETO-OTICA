@@ -27,41 +27,29 @@ class OculosVarianteCorAdmin(admin.ModelAdmin):
 
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'nome_cliente', 'telefone_whatsapp', 'oculos', 'status', 'criado_em']
+    list_display = ['id', 'nome_cliente', 'telefone_whatsapp', 'total_itens', 'status', 'criado_em']
     list_filter = ['status']
     search_fields = ['nome_cliente', 'telefone_whatsapp', 'usuario__username']
     readonly_fields = ['oculos_snapshot', 'criado_em', 'atualizado_em']
     list_editable = ['status']
 
-    def save_model(self, request, obj, form, change):
-        if not obj.usuario_id:
-            obj.usuario = request.user
-        if not obj.oculos_snapshot and obj.oculos:
-            oculos = obj.oculos
-            obj.oculos_snapshot = {
-                'id': oculos.id,
-                'codigo_referencia': oculos.codigo_referencia,
-                'nome': oculos.nome,
-                'marca': oculos.get_marca_display(),
-                'material': oculos.get_material_display(),
-                'formato': oculos.get_formato_display(),
-                'genero': oculos.get_genero_display(),
-                'medida_aro': oculos.medida_aro,
-                'medida_ponte': oculos.medida_ponte,
-                'medida_haste': oculos.medida_haste,
-                'preco': str(oculos.preco),
-            }
-        super().save_model(request, obj, form, change)
+    def total_itens(self, obj):
+        total = obj.itens.count()
+        return f"{total} óculos"
+    total_itens.short_description = 'Itens'
 
     fieldsets = (
         ('Cliente', {
             'fields': ('usuario', 'nome_cliente', 'telefone_whatsapp')
         }),
-        ('Óculos', {
-            'fields': ('oculos', 'oculos_snapshot')
+        ('Visita', {
+            'fields': ('data_visita', 'horario_visita')
         }),
-        ('Receita e Observações', {
-            'fields': ('receita', 'observacoes')
+        ('Óculos', {
+            'fields': ('oculos_snapshot',)
+        }),
+        ('Observações', {
+            'fields': ('observacoes',)
         }),
         ('Controle interno', {
             'fields': ('status', 'observacoes_admin', 'criado_em', 'atualizado_em')

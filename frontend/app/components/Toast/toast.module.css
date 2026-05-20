@@ -1,0 +1,97 @@
+/* Container fixo em um local nobre da tela */
+.wrap {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10000; /* Acima de absolutamente tudo */
+  pointer-events: none;
+}
+
+/* O Toast em si */
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 320px;
+  max-width: 420px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  
+  /* Sombrona pesada para descolar o toast do fundo bege do site */
+  box-shadow: 0 12px 32px rgba(42, 24, 5, 0.25), 
+              0 4px 8px rgba(0, 0, 0, 0.08);
+              
+  /* Animação com um "efeito elástico" (pop) que puxa o olhar */
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.sucesso {
+  background-color: var(--bg); 
+  color: #10b981;
+  border-left: 5px solid #10b981;
+}
+
+.erro {
+  background-color: var(--bg); 
+  color: #7f1d1d; 
+  border-left: 5px solid #7f1d1d; 
+}
+
+.aviso {
+  background-color: var(--bg); 
+  color: #a94c00;
+  border-left: 5px solid #a94c00;
+}
+
+.icone {
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.msg {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.sucesso .msg {
+  color: #10b981;
+}
+
+.fechar {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.9;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.fechar:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translate3d(24px, -10px, 0) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}

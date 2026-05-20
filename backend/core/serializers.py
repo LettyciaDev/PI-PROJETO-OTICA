@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento, ItemCarrinho
+from .models import Oculos, OculosVarianteCor, OculosImagem, Reserva, ExameAgendamento, ItemCarrinho, ItemReserva
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -137,10 +137,28 @@ class OculosSerializer(serializers.ModelSerializer):
 
 # serializer do CARRINHO!
 class ItemCarrinhoSerializer(serializers.ModelSerializer):
+    imagem_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ItemCarrinho
         fields = '__all__'
         read_only_fields = ['usuario', 'adicionado_em']
+
+    def get_imagem_url(self, obj):
+        if not obj.imagem:
+            return None
+        if obj.imagem.startswith('http'):
+            return obj.imagem
+        try:
+            from .db_storage import DatabaseStorage
+            storage = DatabaseStorage()
+            caminho_relativo = storage.url(obj.imagem)
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(caminho_relativo)
+            return f"http://localhost:8000{caminho_relativo}"
+        except Exception:
+            return None
 
 EXTENSOES_PERMITIDAS = ['.jpg', '.jpeg', '.png', '.pdf', '.docx']
 
@@ -155,8 +173,13 @@ class UsuarioResumoSerializer(serializers.ModelSerializer):
     def get_nome_completo(self, obj):
         return obj.get_full_name() or obj.username
 
+class ItemReservaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemReserva
+        fields = ['oculos', 'nome', 'cor', 'lentes', 'quantidade', 'preco_unit']
 
 class ReservaSerializer(serializers.ModelSerializer):
+    itens = ItemReservaSerializer(many=True, read_only=True)
     usuario_detalhe = UsuarioResumoSerializer(source='usuario', read_only=True)
 
     class Meta:
@@ -164,45 +187,26 @@ class ReservaSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['criado_em', 'atualizado_em', 'oculos_snapshot', 'usuario']
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Este e-mail já está cadastrado.")
-        return value
-
-    def validate_oculos(self, value):
-        if value is None:
-            raise serializers.ValidationError("Selecione um óculos válido.")
-        return value
-
-    def validate_receita(self, value):
-        import os
-        ext = os.path.splitext(value.name)[1].lower()
-        if ext not in EXTENSOES_PERMITIDAS:
-            raise serializers.ValidationError(
-                f"Formato não permitido. Use: {', '.join(EXTENSOES_PERMITIDAS)}"
-            )
-        if value.size > 10 * 1024 * 1024:
-            raise serializers.ValidationError("O arquivo deve ter no máximo 10 MB.")
-        return value
-
     def create(self, validated_data):
-        oculos = validated_data['oculos']
+        itens_data = self.context.get('itens', [])
 
-        validated_data['oculos_snapshot'] = {
-            'id': oculos.id,
-            'codigo_referencia': oculos.codigo_referencia,
-            'nome': oculos.nome,
-            'marca': oculos.get_marca_display(),
-            'material': oculos.get_material_display(),
-            'formato': oculos.get_formato_display(),
-            'genero': oculos.get_genero_display(),
-            'medida_aro': oculos.medida_aro,
-            'medida_ponte': oculos.medida_ponte,
-            'medida_haste': oculos.medida_haste,
-            'preco': str(oculos.preco),
-        }
+        validated_data['oculos_snapshot'] = [
+            {
+                'nome': i['nome'],
+                'cor': i['cor'],
+                'lentes': i['lentes'],
+                'quantidade': i['quantidade'],
+                'preco_unit': str(i['preco_unit']),
+            }
+            for i in itens_data
+        ]
 
-        return super().create(validated_data)
+        reserva = Reserva.objects.create(**validated_data)
+
+        for item in itens_data:
+            ItemReserva.objects.create(reserva=reserva, **item)
+
+        return reserva
 
 
 class ReservaStatusSerializer(serializers.ModelSerializer):
@@ -322,6 +326,6 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['username'] = self.user.username
         data['email'] = self.user.email
         data['is_staff'] = self.user.is_staff
-        data['full_name'] = f"{self.user.first_name} {self.user.last_name}".strip()
+        data['full_name'] = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
 
         return data

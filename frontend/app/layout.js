@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ToastProvider } from './components/Toast/toast';
 
 export const metadata = {
   title: "Create Next App",
@@ -8,7 +9,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
-      <body>{children}</body>
+        <body>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </body>
     </html>
   );
 }

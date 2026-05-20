@@ -1,11 +1,10 @@
-from rest_framework import views
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, viewsets, status, views
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .models import Oculos, Reserva, ExameAgendamento, ItemCarrinho
+from .models import Oculos, Reserva, ExameAgendamento, ItemCarrinho, OculosVarianteCor
 from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer,
                           ReservaStatusSerializer, PasswordResetRequestSerializer,
                           PasswordResetConfirmSerializer, MyTokenObtainPairSerializer,
@@ -155,67 +154,129 @@ def oculos_detalhe(request, slug):
 
 class CarrinhoViewSet(viewsets.ModelViewSet):
     serializer_class = ItemCarrinhoSerializer
-    permission_classes = [IsAuthenticated]  # voltou
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ItemCarrinho.objects.filter(usuario=self.request.user)  # voltou
+        return ItemCarrinho.objects.filter(usuario=self.request.user)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
     def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)  # voltou
+        serializer.save(usuario=self.request.user)
 
-    def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return self.update(request, *args, **kwargs)
+    def _get_estoque(self, oculos_id, cor):
+        """Retorna quantidade_estoque da variante ou None se não encontrar."""
+        try:
+            variante = OculosVarianteCor.objects.get(oculos_id=oculos_id, cor=cor)
+            return variante.quantidade_estoque
+        except OculosVarianteCor.DoesNotExist:
+            return None
 
     def create(self, request, *args, **kwargs):
         oculos_id = request.data.get('oculos')
-        cor = request.data.get('cor', '')
+        cor       = request.data.get('cor', '')
+        qtd_nova  = int(request.data.get('quantidade', 1))
+
+        estoque = self._get_estoque(oculos_id, cor)
+        if estoque is None:
+            return Response(
+                {'erro': 'Variante não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         existente = ItemCarrinho.objects.filter(
-            usuario=request.user,  # voltou
+            usuario=request.user,
             oculos_id=oculos_id,
             cor=cor,
         ).first()
-    
+
+        qtd_atual = existente.quantidade if existente else 0
+
+        if qtd_atual + qtd_nova > estoque:
+            return Response(
+                {'erro': f'Estoque insuficiente. Disponível: {estoque - qtd_atual}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         if existente:
-            existente.quantidade += int(request.data.get('quantidade', 1))
+            existente.quantidade += qtd_nova
             existente.save()
             return Response(ItemCarrinhoSerializer(existente).data)
 
+        return super().create(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        item = self.get_object()
+        qtd_nova = request.data.get('quantidade')
+
+        if qtd_nova is not None:
+            estoque = self._get_estoque(item.oculos_id, item.cor)
+            if estoque is not None and int(qtd_nova) > estoque:
+                return Response(
+                    {'erro': f'Estoque insuficiente. Disponível: {estoque}'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
 
 class ReservaViewSet(viewsets.ModelViewSet):
-    queryset = Reserva.objects.select_related('usuario', 'oculos').all()
+    queryset = Reserva.objects.select_related('usuario').prefetch_related('itens').all()
     serializer_class = ReservaSerializer
-    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    parser_classes = [JSONParser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status']
     search_fields = ['nome_cliente', 'usuario__username', 'usuario__email']
     ordering_fields = ['criado_em', 'atualizado_em', 'status']
- 
+
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action in ['create', 'minhas_reservas']:
             return [IsAuthenticated()]
         return [IsAdminUser()]
- 
+
     def perform_create(self, serializer):
+        itens_carrinho = ItemCarrinho.objects.filter(usuario=self.request.user)
         serializer.save(usuario=self.request.user)
- 
+        itens_carrinho.delete()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['itens'] = getattr(self, '_itens_data', [])
+        return context
+
+    def create(self, request, *args, **kwargs):
+        itens_carrinho = ItemCarrinho.objects.filter(usuario=request.user)
+        if not itens_carrinho.exists():
+            return Response({'erro': 'Carrinho vazio.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        self._itens_data = [
+            {
+                'oculos': item.oculos,
+                'nome': item.nome,
+                'cor': item.cor,
+                'lentes': item.lentes,
+                'quantidade': item.quantidade,
+                'preco_unit': item.preco_unit,
+            }
+            for item in itens_carrinho
+        ]
+        return super().create(request, *args, **kwargs)
+
     @action(detail=True, methods=['patch'], url_path='status', permission_classes=[IsAdminUser])
     def atualizar_status(self, request, pk=None):
-        """
-        PATCH /api/reservas/{id}/status/
-        Atualiza apenas o status e observações internas.
-        """
         reserva = self.get_object()
         serializer = ReservaStatusSerializer(reserva, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(ReservaSerializer(reserva, context={'request': request}).data)
-    
+
     @action(detail=False, methods=['get'], url_path='minhas', permission_classes=[IsAuthenticated])
     def minhas_reservas(self, request):
-        """GET /api/reservas/minhas/ — retorna só as reservas do usuário logado."""
-        reservas = Reserva.objects.filter(usuario=request.user)
+        reservas = Reserva.objects.filter(usuario=request.user).prefetch_related('itens')
         serializer = ReservaSerializer(reservas, many=True, context={'request': request})
         return Response(serializer.data)
     
