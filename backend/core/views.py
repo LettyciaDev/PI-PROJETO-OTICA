@@ -232,6 +232,7 @@ class ReservaViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status']
     search_fields = ['nome_cliente', 'usuario__username', 'usuario__email']
     ordering_fields = ['criado_em', 'atualizado_em', 'status']
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_permissions(self):
         if self.action in ['create', 'minhas_reservas']:
@@ -240,6 +241,18 @@ class ReservaViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         itens_carrinho = ItemCarrinho.objects.filter(usuario=self.request.user)
+        
+        for item in itens_carrinho:
+            try:
+                variante = OculosVarianteCor.objects.get(
+                    oculos_id=item.oculos_id,
+                    cor=item.cor
+                )
+                variante.quantidade_estoque = max(0, variante.quantidade_estoque - item.quantidade)
+                variante.save()
+            except OculosVarianteCor.DoesNotExist:
+                pass 
+
         serializer.save(usuario=self.request.user)
         itens_carrinho.delete()
 

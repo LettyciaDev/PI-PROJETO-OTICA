@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Joan&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Jomolhari&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Forum&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -11,7 +12,7 @@
 
 :root {
   --navbar:#9B5C42;
-  --bg: #f3ebe2;
+  --bg: #f5ede0;
   --marromTexto: #4B3220;
   --surface: #ffffff;
   --border: #e2dbd3;

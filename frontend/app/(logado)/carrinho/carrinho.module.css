@@ -39,7 +39,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .item:hover {
@@ -71,16 +71,16 @@
 }
 
 .nomeItem {
-  font-family: 'Jomolhari', serif;
+  font-family: 'Merriweather', serif;
   font-weight: 500;
-  font-size: 19px;
+  font-size: 23px;
   color: var(--marromTexto);
   margin: 0 0 3px 0;
 }
 
 .detalhesItem {
   font-size: 14px;
-  color: #8a6e50;
+  color: #9C5B35;
   font-weight: 300;
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -106,7 +106,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: all 0.15s ease;
   line-height: 1;
   padding: 0;
 }
@@ -177,8 +177,8 @@
 }
 
 .tituloResumo {
-  font-family: 'Jomolhari', serif;
-  font-size: 1.25rem;
+  font-family: 'Joan', serif;
+  font-size: 1.35rem;
   font-weight: 400;
   color: var(--marromTexto);
   margin: 0 0 24px 0;
@@ -215,15 +215,15 @@
 }
 
 .nomeResumo {
-  font-family: 'Jomolhari', serif;
-  font-size: 15px;
+  font-family: 'Merriweather', serif;
+  font-size: 23px;
   font-weight: 500;
   color: var(--marromTexto);
 }
 
 .detalhesResumo {
   font-size: 12px;
-  color: #8a6e50;
+  color: #9C5B35;
   font-weight: 300;
   font-family: 'Poppins', sans-serif;
 }
@@ -278,12 +278,13 @@
 }
 
 .rotulo {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  color: #6b4c2a;
+  letter-spacing: 0.15em;
+  color: #9C5B35;
   text-transform: uppercase;
   margin-bottom: 2px;
+  font-family: "Jomolhari", serif;
 }
 
 .campo {
@@ -301,7 +302,7 @@
 }
 
 .campo::placeholder {
-  color: #c8a882;
+  color: var(--bg);
 }
 
 .campo:focus {
@@ -343,7 +344,7 @@
 }
 
 .campoTextarea::placeholder {
-  color: #c8a882;
+  color: var(--bg);
 }
 
 .campoTextarea:focus {
@@ -368,7 +369,7 @@
 
 .botaoEnviar:hover {
   background-color: #6b3a1f;
-  color: #fdf6ee;
+  color: var(--bg);
 }
 
 /* circulozinho q gira */
@@ -415,10 +416,10 @@
 }
 
 .modal {
-  background-color: #fdf6ee;
+  background-color: var(--bg);
   border: 1px solid #e8d9c5;
   border-radius: 16px;
-  padding: 36px 40px;
+  padding: 46px 40px;
   max-width: 360px;
   width: 90%;
   display: flex;
@@ -428,15 +429,11 @@
   box-sizing: border-box;
 }
 
-.emoji {
-  font-size: 2rem;
-}
-
 .tituloModal {
-  font-family: 'Jomolhari', serif;
-  font-size: 1.2rem;
+  font-family: 'Joan', serif;
+  font-size: 1.4rem;
   font-weight: 400;
-  color: #3b1f08;
+  color: #4B3220;
   margin: 0;
   text-align: center;
 }
@@ -444,7 +441,7 @@
 .descricaoModal {
   font-family: 'Poppins', sans-serif;
   font-size: 0.85rem;
-  color: #8a6e50;
+  color: #9C5B35;
   margin: 0;
   text-align: center;
   line-height: 1.5;
@@ -472,6 +469,7 @@
   border: 1.5px solid #c8a882;
   background: transparent;
   color: #6b4c2a;
+  transition: all 0.3 ease;
 }
 
 .botaoCancelar:hover {
@@ -480,18 +478,40 @@
 
 .botaoRemover {
   border: none;
-  background-color: #4a2c0a;
+  background-color: #4B3220;
   color: #fdf6ee;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .botaoRemover:hover {
-  background-color: #6b4c2a;
+  background-color: #c30808;
 }
 
 .botaoCancelar:active,
 .botaoRemover:active {
   transform: scale(0.98);
+}
+
+@keyframes deslizarCima {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-16px); }
+}
+
+.secaoFormularioSaindo {
+  animation: deslizarCima 0.3s ease forwards;
+}
+
+.botaoQtd img {
+  transition: all 0.15s ease;
+}
+
+.botaoQtd:hover img {
+  filter: brightness(0) invert(1); 
+}
+
+.botaoQtd:disabled img {
+  filter: brightness(0) saturate(100%) invert(70%);
 }
 
 @keyframes girar {

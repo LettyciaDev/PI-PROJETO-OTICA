@@ -30,12 +30,11 @@ class ReservaAdmin(admin.ModelAdmin):
     list_display = ['id', 'nome_cliente', 'telefone_whatsapp', 'total_itens', 'status', 'criado_em']
     list_filter = ['status']
     search_fields = ['nome_cliente', 'telefone_whatsapp', 'usuario__username']
-    readonly_fields = ['oculos_snapshot', 'criado_em', 'atualizado_em']
+    readonly_fields = ['oculos_snapshot', 'receita', 'criado_em', 'atualizado_em']  
     list_editable = ['status']
 
     def total_itens(self, obj):
-        total = obj.itens.count()
-        return f"{total} óculos"
+        return f"{obj.itens.count()} óculos"
     total_itens.short_description = 'Itens'
 
     fieldsets = (
@@ -47,6 +46,9 @@ class ReservaAdmin(admin.ModelAdmin):
         }),
         ('Óculos', {
             'fields': ('oculos_snapshot',)
+        }),
+        ('Documentos', {                          
+            'fields': ('receita',)
         }),
         ('Observações', {
             'fields': ('observacoes',)

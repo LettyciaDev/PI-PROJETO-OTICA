@@ -1,23 +1,30 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import styles from './carrinho.module.css';
 import { authHeaders } from '../../lib/api';
 import { useToast } from '../../components/Toast/toast';
+import { Datas } from '../../components/Datas/Datas';
 
 export default function Page() {
   const [oculos, setOculos] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [formularioEstado, setFormularioEstado] = useState('fechado'); 
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [data, setData] = useState('');
   const [horario, setHorario] = useState('09:00');
+  const [receita, setReceita] = useState(null);
   const [observacao, setObservacao] = useState('');
   const formularioRef = useRef(null);
   const router = useRouter();
+  const inputReceitaRef = useRef(null);
+  const topoListaRef = useRef(null);
   const mostrarToast = useToast();
+  const [enviando, setEnviando] = useState(false);
   const [modalExcluir, setModalExcluir] = useState(null);
+  const [loadingItem, setLoadingItem] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('access');
@@ -66,26 +73,37 @@ export default function Page() {
   }, []);
 
   async function aumentar(id) {
+    if (loadingItem !== null) return; 
     const item = oculos.find((i) => i.id === id);
     if (!item) return;
 
-    const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ quantidade: item.quantidade + 1 }),
-    });
+    setLoadingItem(id);
+    try {
+      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ quantidade: item.quantidade + 1 }),
+      });
 
-    if (res.ok) {
-      setOculos(oculos.map((i) =>
-        i.id === id ? { ...i, quantidade: i.quantidade + 1 } : i
-      ));
-    } else {
-      const erro = await res.json();
-      mostrarToast(erro.erro ?? 'Não foi possível aumentar.', 'aviso');
+      if (res.status === 401) { router.push('/login'); return; }
+
+      if (res.ok) {
+        setOculos(oculos.map((i) =>
+          i.id === id ? { ...i, quantidade: i.quantidade + 1 } : i
+        ));
+      } else {
+        const erro = await res.json();
+        mostrarToast(erro.erro ?? 'Não foi possível aumentar.', 'aviso');
+      }
+    } catch {
+      mostrarToast('Erro de conexão. Tente novamente.', 'erro');
+    } finally {
+      setLoadingItem(null);
     }
   }
 
   async function diminuir(id) {
+    if (loadingItem !== null) return;
     const item = oculos.find((i) => i.id === id);
     if (!item) return;
 
@@ -94,44 +112,95 @@ export default function Page() {
       return;
     }
 
-    const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ quantidade: item.quantidade - 1 }),
-    });
+    setLoadingItem(id);
+    try {
+      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ quantidade: item.quantidade - 1 }),
+      });
 
-    if (res.ok) {
-      setOculos(oculos.map((i) =>
-        i.id === id ? { ...i, quantidade: i.quantidade - 1 } : i
-      ));
+      if (res.status === 401) { router.push('/login'); return; }
+
+      if (res.ok) {
+        setOculos(oculos.map((i) =>
+          i.id === id ? { ...i, quantidade: i.quantidade - 1 } : i
+        ));
+      } else {
+        const erro = await res.json();
+        mostrarToast(erro.erro ?? 'Não foi possível diminuir.', 'aviso');
+      }
+    } catch {
+      mostrarToast('Erro de conexão. Tente novamente.', 'erro');
+    } finally {
+      setLoadingItem(null);
     }
   }
 
-  function abrirFormulario() { setMostrarFormulario(true); }
+  function abrirFormulario() { setFormularioEstado('aberto'); }
 
   useEffect(() => {
-    if (mostrarFormulario && formularioRef.current) {
+    if (formularioEstado === 'aberto' && formularioRef.current) {
       formularioRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [mostrarFormulario]);
+  }, [formularioEstado]);
+
+  useEffect(() => {
+    if (oculos.length === 0 && formularioEstado === 'aberto') {
+      fecharFormulario();
+    }
+  }, [oculos, formularioEstado, fecharFormulario]);
+
+  function fecharFormulario() {
+    if (formularioEstado !== 'aberto') return;
+    setFormularioEstado('saindo');
+    setTimeout(() => {
+      setFormularioEstado('fechado');
+      const topo = topoListaRef.current?.getBoundingClientRect().top ?? 0;
+      const alturaNavbar = 80;
+      window.scrollTo({
+        top: window.scrollY + topo - alturaNavbar,
+        behavior: 'smooth',
+      });
+    }, 300);
+  }
 
   async function enviarReserva() {
+    if (enviando) return;
+
     if (!nome.trim() || !telefone.trim() || !data.trim()) {
       mostrarToast('Preencha nome, telefone e data de visita.', 'erro');
       return;
     }
 
+    if (receita) {
+      const extensoesPermitidas = ['.pdf', '.doc', '.docx', '.png', '.jpg', '.jpeg'];
+      const nomeArquivo = receita.name.toLowerCase();
+      const extensaoValida = extensoesPermitidas.some(ext => nomeArquivo.endsWith(ext));
+      if (!extensaoValida) {
+        mostrarToast('Formato inválido. Use PDF, DOC, DOCX, PNG ou JPG.', 'erro');
+        return;
+      }
+    }
+
+    setEnviando(true); 
+
     try {
+      const formData = new FormData();
+      formData.append('nome_cliente', nome);
+      formData.append('telefone_whatsapp', telefone);
+      formData.append('data_visita', data);
+      formData.append('horario_visita', horario);
+      formData.append('observacoes', observacao);
+      if (receita) formData.append('receita', receita);
+
+      const headers = authHeaders();
+      delete headers['Content-Type'];
+
       const res = await fetch('http://localhost:8000/api/reservas/', {
         method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          nome_cliente: nome,
-          telefone_whatsapp: telefone,
-          data_visita: data,
-          horario_visita: horario,
-          observacoes: observacao,
-        }),
+        headers,
+        body: formData,
       });
 
       if (!res.ok) {
@@ -141,12 +210,15 @@ export default function Page() {
       }
 
       setOculos([]);
-      setMostrarFormulario(false);
-      setNome(''); setTelefone(''); setData(''); setHorario('09:00'); setObservacao('');
+      setNome(''); setTelefone(''); setData(''); setHorario('09:00');
+      setObservacao(''); setReceita(null);
       mostrarToast('Reserva confirmada por 48h!', 'sucesso');
+      fecharFormulario();
 
     } catch {
       mostrarToast('Erro de conexão. Tente novamente.', 'erro');
+    } finally {
+      setEnviando(false); 
     }
   }
 
@@ -157,11 +229,44 @@ export default function Page() {
   async function confirmarExcluir() {
     const id = modalExcluir;
     setModalExcluir(null);
-    const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    if (res.ok) setOculos(oculos.filter((i) => i.id !== id));
+    try {
+      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (res.status === 401) { router.push('/login'); return; }
+      if (res.ok) {
+        setOculos(oculos.filter((i) => i.id !== id));
+      } else {
+        mostrarToast('Não foi possível remover. Tente novamente.', 'erro');
+      }
+    } catch {
+      mostrarToast('Erro de conexão ao remover item.', 'erro');
+    }
+  }
+
+  function aplicarMascaraTelefone(valor) {
+    const digits = valor.replace(/\D/g, '').slice(0, 13);
+
+    let mascara = '';
+
+    if (digits.length === 0) return '';
+
+    if (digits.length <= 2) {
+      mascara = `(+${digits}`;
+    }
+    else if (digits.length <= 4) {
+      mascara = `(+${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    }
+    else if (digits.length <= 8) {
+      mascara = `(+${digits.slice(0, 2)}) ${digits.slice(2, 4)} ${digits.slice(4)}`;
+    } else if (digits.length <= 12) {
+      mascara = `(+${digits.slice(0, 2)}) ${digits.slice(2, 4)} ${digits.slice(4, 8)}-${digits.slice(8)}`;
+    } else {
+      mascara = `(+${digits.slice(0, 2)}) ${digits.slice(2, 4)} ${digits.slice(4, 5)} ${digits.slice(5, 9)}-${digits.slice(9)}`;
+    }
+
+    return mascara;
   }
 
   if (carregando) {
@@ -175,7 +280,7 @@ export default function Page() {
 
   return (
     <div className={styles.pagina}>
-      <div className={styles.secaoLista}>
+      <div className={styles.secaoLista} ref={topoListaRef}>
         <h1 className={styles.titulo}>Reserve seus óculos</h1>
 
         {oculos.length === 0 ? (
@@ -213,9 +318,32 @@ export default function Page() {
                   </p>
                 </div>
                 <div className={styles.controles}>
-                  <button className={styles.botaoQtd} onClick={() => diminuir(item.id)}>−</button>
+                  <button 
+                    className={styles.botaoQtd} 
+                    onClick={() => diminuir(item.id)}
+                    disabled={loadingItem !== null}
+                    style={{ opacity: loadingItem === item.id ? 0.4 : 1 }}
+                  >{item.quantidade === 1 
+                    ? <Image 
+                        className={styles.lixo} 
+                        style={{ marginLeft: 1.1 }} 
+                        src="/carrinho/lixo.svg" 
+                        width={18} 
+                        height={18} 
+                        alt="Lixo" 
+                      /> 
+                    : <span style={{ marginTop: 2, marginLeft: 1 }}>−</span>
+                  }
+                  </button>
                   <span className={styles.quantidade}>{item.quantidade}</span>
-                  <button className={styles.botaoQtd} onClick={() => aumentar(item.id)}>+</button>
+                  <button
+                    className={styles.botaoQtd}
+                    onClick={() => aumentar(item.id)}
+                    disabled={loadingItem !== null}
+                    style={{ opacity: loadingItem === item.id ? 0.4 : 1 }}
+                  >
+                    <span style={{ marginTop: 2, marginLeft: 1 }}>+</span>
+                  </button>
                 </div>
               </li>
             ))}
@@ -232,8 +360,8 @@ export default function Page() {
         )}
       </div>
 
-      {mostrarFormulario && (
-        <div className={styles.secaoFormulario} ref={formularioRef}>
+      {formularioEstado !== 'fechado' && (
+        <div className={`${styles.secaoFormulario} ${formularioEstado === 'saindo' ? styles.secaoFormularioSaindo : ''}`} ref={formularioRef}>
           <div className={styles.painelDuplo}>
             <div className={styles.painelResumo}>
               <h2 className={styles.tituloResumo}>Resumo da reserva</h2>
@@ -252,10 +380,10 @@ export default function Page() {
             </div>
 
             <div className={styles.painelFormulario}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <h2 className={styles.tituloFormulario} style={{ margin: 0 }}>Insira seus dados</h2>
+              <h2 className={styles.tituloFormulario}>Insira seus dados</h2>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16, marginTop: -60}}>
                 <button
-                  onClick={() => setMostrarFormulario(false)}
+                  onClick={fecharFormulario}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
                     fontSize: '1.5rem', color: '#6b4c2a', lineHeight: 1, padding: 4,
@@ -265,35 +393,67 @@ export default function Page() {
                   ✕
                 </button>
               </div>
-              <h2 className={styles.tituloFormulario}>Insira seus dados</h2>
-
-              <label className={styles.rotulo}>NOME COMPLETO</label>
+              <label className={styles.rotulo}>NOME COMPLETO <span style={{ color: 'red' }}>*</span></label>
               <input className={styles.campo} type="text" placeholder="Seu nome"
                 value={nome} onChange={(e) => setNome(e.target.value)} />
 
-              <label className={styles.rotulo}>TELEFONE / WHATSAPP</label>
-              <input className={styles.campo} type="tel" placeholder="(+__) __ _ ____-____"
-                value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+              <label className={styles.rotulo}>TELEFONE / WHATSAPP <span style={{ color: 'red' }}>*</span></label>
+              <input
+                className={styles.campo}
+                type="tel"
+                placeholder="(+__) __ _ ____-____"
+                value={telefone}
+                onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+              />
+              <Datas
+                value={data}
+                onChange={(d) => {
+                  if (!d) return
+                  const ano = d.getFullYear()
+                  const mes = String(d.getMonth() + 1).padStart(2, '0')
+                  const dia = String(d.getDate()).padStart(2, '0')
+                  setData(`${ano}-${mes}-${dia}`)
+                }}
+                horario={horario}
+                onHorarioChange={setHorario}
+              />
 
-              <div className={styles.linhaData}>
-                <div className={styles.grupoData}>
-                  <label className={styles.rotulo}>DATA DE VISITA</label>
-                  <input className={styles.campo} type="date"
-                    value={data} onChange={(e) => setData(e.target.value)} />
-                </div>
-                <div className={styles.grupoHorario}>
-                  <label className={styles.rotulo}>HORÁRIO</label>
-                  <input className={styles.campo} type="time"
-                    value={horario} onChange={(e) => setHorario(e.target.value)} />
-                </div>
+              <label className={styles.rotulo}>RECEITA MÉDICA (opcional)</label>
+              <div
+                className={styles.campo}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '10px 14px' }}
+                onClick={() => inputReceitaRef.current?.click()}
+              >
+                <Image src="/carrinho/attach.svg" width={20} height={20} alt="Clipzin"/>
+                <span style={{ color: receita ? '#f5ede0' : '#f5ede0', fontSize: '0.9rem', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {receita ? receita.name : 'Clique para anexar (PDF, DOC, PNG, JPG)'}
+                </span>
+                {receita && (
+                  <span
+                    onClick={(e) => { e.stopPropagation(); setReceita(null); }}
+                    style={{ fontSize: '1rem', color: '#f5ede0', cursor: 'pointer' }}
+                  >✕</span>
+                )}
               </div>
+              <input
+                ref={inputReceitaRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                style={{ display: 'none' }}
+                onChange={(e) => setReceita(e.target.files[0] ?? null)}
+              />
 
-              <label className={styles.rotulo}>OBSERVAÇÕES</label>
+              <label className={styles.rotulo}>OBSERVAÇÕES (opcional)</label>
               <textarea className={styles.campoTextarea} placeholder="Observação"
                 value={observacao} onChange={(e) => setObservacao(e.target.value)} />
 
-              <button className={styles.botaoEnviar} onClick={enviarReserva}>
-                CONFIRMAR RESERVA
+              <button 
+                className={styles.botaoEnviar} 
+                onClick={enviarReserva}
+                disabled={enviando}
+                style={{ opacity: enviando ? 0.6 : 1, cursor: enviando ? 'not-allowed' : 'pointer' }}
+              >
+                {enviando ? 'ENVIANDO...' : 'CONFIRMAR RESERVA'}
               </button>
             </div>
           </div>
@@ -302,7 +462,7 @@ export default function Page() {
       {modalExcluir !== null && (
         <div className={styles.overlay}>
           <div className={styles.modal}>
-            <span className={styles.emoji}>🗑️</span>
+            <Image className={styles.lixo} src="/carrinho/lixo.svg" width={50} height={50} alt="Lixo" />
             <h2 className={styles.tituloModal}>
               Remover do carrinho?
             </h2>

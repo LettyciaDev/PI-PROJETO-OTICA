@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 import os
 from .db_storage import DatabaseStorage
 
@@ -165,6 +167,13 @@ class Reserva(models.Model):
     telefone_whatsapp = models.CharField(max_length=20)
     data_visita = models.DateField()
     horario_visita = models.TimeField()
+    receita = models.FileField(
+        upload_to='receitas/',
+        storage=db_storage,        
+        blank=True,
+        null=True,
+        verbose_name='Receita médica'
+    )
     observacoes = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     observacoes_admin = models.TextField(blank=True)
@@ -230,3 +239,19 @@ class ExameAgendamento(models.Model):
 
     def __str__(self):
         return f"Exame #{self.pk} — {self.nome_cliente} ({self.get_status_display()})"
+    
+    
+@receiver(post_delete, sender=Reserva)
+def restaurar_estoque_ao_deletar(sender, instance, **kwargs):
+    for item in instance.itens.all():
+        if not item.oculos:
+            continue
+        try:
+            variante = OculosVarianteCor.objects.get(
+                oculos=item.oculos,
+                cor=item.cor
+            )
+            variante.quantidade_estoque += item.quantidade
+            variante.save()
+        except OculosVarianteCor.DoesNotExist:
+            pass

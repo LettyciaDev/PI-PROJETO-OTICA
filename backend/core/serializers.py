@@ -181,12 +181,23 @@ class ItemReservaSerializer(serializers.ModelSerializer):
 class ReservaSerializer(serializers.ModelSerializer):
     itens = ItemReservaSerializer(many=True, read_only=True)
     usuario_detalhe = UsuarioResumoSerializer(source='usuario', read_only=True)
+    receita_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Reserva
         fields = '__all__'
         read_only_fields = ['criado_em', 'atualizado_em', 'oculos_snapshot', 'usuario']
 
+    def get_receita_url(self, obj):
+        if not obj.receita:
+            return None
+        request = self.context.get('request')
+        try:
+            url = obj.receita.url         
+            return request.build_absolute_uri(url) if request else url
+        except Exception:
+            return None
+    
     def create(self, validated_data):
         itens_data = self.context.get('itens', [])
 
