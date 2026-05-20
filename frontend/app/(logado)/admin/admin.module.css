@@ -1,0 +1,80 @@
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background-color: #965A3E; 
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: 'Times New Roman', Times, serif; 
+}
+
+.logoContainer {
+  margin-bottom: 20px;
+  text-align: center;
+}   
+.logo {
+  max-width: 120px;
+  height: auto;
+}
+
+.titleContainer {
+  text-align: center;
+  color: #FFFFFF;
+  margin-bottom: 50px;
+}
+
+.mainTitle {
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 1% 2px 4px 0;
+}
+
+.subTitle {
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  margin: 0;
+  opacity: 0.9;
+}
+.navMenu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Espaçamento idêntico entre os botões */
+}
+
+/* Botões normais (Vazados/Borda fina) */
+.navButton {
+  width: 100%;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Linha fina e sutil */
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Botão Ativo (Dashboard - Marrom Escuro com Borda Fina Branca) */
+.activeButton {
+  background-color: #5C331E; /* Fundo escuro do botão ativo */
+  border: 1px solid #FFFFFF;  /* Borda branca bem definida */
+  border-radius: 8px;        /* Leve arredondado que tem no botão do Dashboard */
+}
+
+.activeButton:hover {
+  background-color: #4A2817;
+}
