@@ -139,6 +139,8 @@ class OculosPublicoViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OculosSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
+    filter_backends = [SearchFilter]                        
+    search_fields = ['nome', 'marca', 'formato', 'material']
     
 @api_view(['GET'])
 def oculos_detalhe(request, slug):
