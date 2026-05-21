@@ -111,13 +111,6 @@
   color: #7A6555;
 }
 
-.estadoIcone {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: 16px;
-  filter: grayscale(0.2);
-}
-
 .estadoInicial p,
 .semResultados p {
   font-size: 0.95rem;
@@ -226,8 +219,8 @@
 }
 
 .cardNome {
-  font-family: "Jomolhari", serif;
-  font-size: 1.05rem;
+  font-family: "Joan", serif;
+  font-size: 1.15rem;
   font-weight: 400;
   color: var(--marromTexto, #4B3220);
   margin: 0;
