@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import styles from "./produtos.module.css";
 import { authHeaders } from '../../../lib/api';
+import { useToast } from '../../../components/Toast/toast';
+import { useCarrinho } from '../../../lib/CarrinhoProvider';
 
 // ─────────────────────────────────────────────────────────
 //  UTILITÁRIOS
@@ -67,34 +68,13 @@ const capitalize = (texto) => {
 };
 
 // ─────────────────────────────────────────────────────────
-//  CARRINHO
-// ─────────────────────────────────────────────────────────
-async function adicionarAoCarrinho(item) {
-  const res = await fetch('http://localhost:8000/api/carrinho/', {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({
-      oculos:     item.oculosId,
-      slug:       item.slug,
-      nome:       item.nome,
-      marca:      item.marca,
-      cor:        item.cor,
-      lentes:     item.lentes,
-      quantidade: item.quantidade,
-      preco_unit: item.precoUnitario,
-      imagem:     item.imagem,
-    }),
-  });
-  return res.ok;
-}
-
-// ─────────────────────────────────────────────────────────
 //  MODAL DE CONFIRMAÇÃO
 // ─────────────────────────────────────────────────────────
 function ModalConfirmacao({
   aberto, onFechar, onConfirmar,
   nomeProduto, corSelecionada, corHex,
   lentesSelecionadas, quantidade, precoUnitario,
+  adicionando,
 }) {
   const btnRef = useRef(null);
 
@@ -179,13 +159,10 @@ function ModalConfirmacao({
           <button
             ref={btnRef}
             className={styles.modalBtnConfirmar}
-            style={corHex
-              ? { background: corHex, boxShadow: `0 4px 18px ${corHex}55` }
-              : undefined
-            }
+            disabled={adicionando}
             onClick={onConfirmar}
           >
-            Adicionar ao carrinho →
+            {adicionando ? 'Adicionando...' : 'Adicionar ao carrinho →'}
           </button>
         </div>
       </div>
@@ -244,6 +221,17 @@ function BotaoCompartilhar({ nomeProduto }) {
 
   function toggleMenu() { setEstado((s) => (s === "menu" ? "idle" : "menu")); }
 
+  useEffect(() => {
+    if (estado !== 'menu') return;
+    const fechar = (e) => {
+      if (!e.target.closest(`.${styles.compartilharWrapper}`)) {
+        setEstado('idle');
+      }
+    };
+    document.addEventListener('mousedown', fechar);
+    return () => document.removeEventListener('mousedown', fechar);
+  }, [estado]);
+
   function compartilharWhatsApp() {
     const url = encodeURIComponent(window.location.href);
     const texto = encodeURIComponent(`Olha esse óculos: ${nomeProduto} 🕶️`);
@@ -293,14 +281,17 @@ function BotaoCompartilhar({ nomeProduto }) {
 //  COMPONENTE PRINCIPAL
 // ─────────────────────────────────────────────────────────
 export default function ProdutoCliente({ oculos }) {
-  const router = useRouter();
   const variantes = oculos.variantes ?? [];
   const [varianteSelecionada, setVarianteSelecionada] = useState(variantes[0] ?? null);
   const todasImagens = varianteSelecionada?.imagens ?? [];
   const [indexFotoAtiva, setIndexFotoAtiva] = useState(0);
+  const mostrarToast  = useToast();
+  const { recarregar } = useCarrinho();
+  const [adicionando, setAdicionando] = useState(false);
 
   function selecionarVariante(v) {
     setVarianteSelecionada(v);
+    setQuantidade(1); 
     const idxPrincipal = v.imagens?.findIndex((img) => img.e_principal) ?? 0;
     setIndexFotoAtiva(idxPrincipal >= 0 ? idxPrincipal : 0);
   }
@@ -329,20 +320,46 @@ export default function ProdutoCliente({ oculos }) {
   const bgCorAtual = getCorBackground(varianteSelecionada?.cor);
   const lentesSelecionadas = Object.entries(lentes).filter(([, v]) => v).map(([k]) => k);
 
-  function confirmarEIrAoCarrinho() {
-    adicionarAoCarrinho({
-      oculosId: oculos.id,
-      slug: oculos.slug,
-      nome: oculos.nome,
-      marca: oculos.marca,
-      cor: varianteSelecionada?.cor ?? "",
-      lentes: lentesSelecionadas,
-      quantidade,
-      precoUnitario,
-      imagem: getFotoPrincipal(varianteSelecionada),
+  async function confirmarEIrAoCarrinho() {
+    setAdicionando(true);
+    const res = await fetch('http://localhost:8000/api/carrinho/', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({
+        oculos:     oculos.id,
+        slug:       oculos.slug,
+        nome:       oculos.nome,
+        marca:      oculos.marca,
+        cor:        varianteSelecionada?.cor ?? '',
+        lentes:     lentesSelecionadas,
+        quantidade,
+        preco_unit: precoUnitario,
+        imagem:     getFotoPrincipal(varianteSelecionada),
+      }),
     });
+    setAdicionando(false);
+
     setModalAberto(false);
-    router.push("/carrinho");
+
+    if (res.ok) {
+      await recarregar();
+      mostrarToast('Adicionado ao carrinho!', 'sucesso');
+    } else {
+      const erro = await res.json().catch(() => ({}));
+      const msg = erro?.erro ?? '';
+
+      if (msg.toLowerCase().includes('estoque')) {
+        const disponivel = msg.match(/\d+/)?.[0];
+        mostrarToast(
+          disponivel === '0'
+            ? 'Você já tem todo o estoque disponível no carrinho!'
+            : `Estoque insuficiente. Você já tem ${disponivel ?? 'o máximo'} no carrinho.`,
+          'aviso'
+        );
+      } else {
+        mostrarToast('Erro ao adicionar. Tente novamente.', 'erro');
+      }
+    }
   }
 
   const avaliacoes = [
@@ -363,6 +380,7 @@ export default function ProdutoCliente({ oculos }) {
         lentesSelecionadas={lentesSelecionadas}
         quantidade={quantidade}
         precoUnitario={precoUnitario}
+        adicionando={adicionando}
       />
 
       <div className={styles.root}>

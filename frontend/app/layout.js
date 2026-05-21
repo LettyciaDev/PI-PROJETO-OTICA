@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ToastProvider } from './components/Toast/toast';
+import { CarrinhoProvider } from "./lib/CarrinhoProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -11,7 +12,9 @@ export default function RootLayout({ children }) {
     <html lang="pt-br">
         <body>
           <ToastProvider>
-            {children}
+            <CarrinhoProvider>
+              {children}
+            </CarrinhoProvider>
           </ToastProvider>
         </body>
     </html>

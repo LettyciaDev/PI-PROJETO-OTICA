@@ -194,7 +194,7 @@
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .modalBtnConfirmar:hover {
@@ -279,7 +279,7 @@
   font-size: 0.78rem;
   font-weight: 500;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
@@ -458,7 +458,7 @@
   font-size: 0.83rem;
   color: var(--marromTexto);
   cursor: pointer;
-  transition: color 0.15s;
+  transition: all 0.15s ease;
 }
 
 .checkboxItem:hover {
@@ -527,7 +527,7 @@
   background: linear-gradient(135deg, #ede6de 0%, #d9cfca 100%);
   cursor: pointer;
   padding: 0;
-  transition: border-color 0.2s, transform 0.15s;
+  transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
@@ -560,7 +560,7 @@
   border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .qtdBtn {
@@ -571,7 +571,7 @@
   font-size: 1.1rem;
   cursor: pointer;
   color: var(--marromTexto);
-  transition: background 0.15s;
+  transition: 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -608,7 +608,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   cursor: pointer;
-  transition: filter 0.2s, transform 0.15s;
+  transition: all 0.2s ease;
 }
 
 .btnComprar:hover:not(:disabled) {
@@ -730,7 +730,7 @@
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: all 0.2s ease;
 }
 
 .card:hover {

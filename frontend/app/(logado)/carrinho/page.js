@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from './carrinho.module.css';
 import { authHeaders } from '../../lib/api';
 import { useToast } from '../../components/Toast/toast';
+import { useCarrinho } from '../../lib/CarrinhoProvider';
 import { Datas } from '../../components/Datas/Datas';
 
 export default function Page() {
@@ -25,6 +26,7 @@ export default function Page() {
   const [enviando, setEnviando] = useState(false);
   const [modalExcluir, setModalExcluir] = useState(null);
   const [loadingItem, setLoadingItem] = useState(null);
+  const { recarregar } = useCarrinho();
 
   useEffect(() => {
     const token = localStorage.getItem('access');
@@ -91,6 +93,7 @@ export default function Page() {
         setOculos(oculos.map((i) =>
           i.id === id ? { ...i, quantidade: i.quantidade + 1 } : i
         ));
+        await recarregar();
       } else {
         const erro = await res.json();
         mostrarToast(erro.erro ?? 'Não foi possível aumentar.', 'aviso');
@@ -119,13 +122,13 @@ export default function Page() {
         headers: authHeaders(),
         body: JSON.stringify({ quantidade: item.quantidade - 1 }),
       });
-
       if (res.status === 401) { router.push('/login'); return; }
 
       if (res.ok) {
         setOculos(oculos.map((i) =>
           i.id === id ? { ...i, quantidade: i.quantidade - 1 } : i
         ));
+        await recarregar();
       } else {
         const erro = await res.json();
         mostrarToast(erro.erro ?? 'Não foi possível diminuir.', 'aviso');
@@ -237,6 +240,7 @@ export default function Page() {
       if (res.status === 401) { router.push('/login'); return; }
       if (res.ok) {
         setOculos(oculos.filter((i) => i.id !== id));
+        await recarregar();
       } else {
         mostrarToast('Não foi possível remover. Tente novamente.', 'erro');
       }
@@ -425,7 +429,7 @@ export default function Page() {
                 onClick={() => inputReceitaRef.current?.click()}
               >
                 <Image src="/carrinho/attach.svg" width={20} height={20} alt="Clipzin"/>
-                <span style={{ color: receita ? '#f5ede0' : '#f5ede0', fontSize: '0.9rem', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span style={{ color: receita ? '#f5ede0' : 'rgba(245, 237, 224, 0.5)', fontSize: '0.9rem', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {receita ? receita.name : 'Clique para anexar (PDF, DOC, PNG, JPG)'}
                 </span>
                 {receita && (

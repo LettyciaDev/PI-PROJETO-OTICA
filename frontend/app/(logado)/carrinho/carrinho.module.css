@@ -302,7 +302,7 @@
 }
 
 .campo::placeholder {
-  color: var(--bg);
+  color: rgba(245, 237, 224, 0.5);
 }
 
 .campo:focus {
@@ -344,7 +344,7 @@
 }
 
 .campoTextarea::placeholder {
-  color: var(--bg);
+  color: rgba(245, 237, 224, 0.5);
 }
 
 .campoTextarea:focus {

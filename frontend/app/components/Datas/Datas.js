@@ -147,13 +147,14 @@ export function Datas({
       <div className={styles.horarioBloco}>
         <label className={styles.label}>HORÁRIO <span style={{ color: 'red' }}>*</span></label>
         <input
-          className={`${styles.input} ${styles.inputHorario}${horarioErro ? ` ${styles.inputErro}` : ""}`}
+          className={`${styles.input} ${styles.inputHorario} ${horarioErro ? styles.inputErro : ""}`}
           type="time"
           min={HORARIO_MIN}
           max={HORARIO_MAX}
           value={horario}
           onChange={handleHorario}
           onBlur={handleHorarioBlur}
+          style={{ color: horario ? 'var(--bg)' : 'rgba(245, 237, 224, 0.5)' }}
         />
         {horarioErro && (
           <span className={styles.erroMsg}>
