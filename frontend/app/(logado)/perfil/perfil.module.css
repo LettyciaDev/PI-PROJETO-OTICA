@@ -29,7 +29,7 @@
 }
 
 .sidebar {
-  width: 220px;
+  width: 280px;
   flex-shrink: 0;
   border-right: 0.5px solid var(--borda);
   padding: 2rem 1.5rem;
@@ -48,10 +48,10 @@
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: var(--marrom-palido);
+  background: var(--creme-escuro);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,7 +64,7 @@
 
 .sidebarNome {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--marromTexto);
   font-family: "Jomolhari", serif;
@@ -72,7 +72,7 @@
 
 .sidebarRole {
   margin: 0;
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--marrom-claro);
   font-family: "Poppins", sans-serif;
 }
@@ -108,7 +108,7 @@
 }
 
 .sidebarLabel {
-  font-size: 13.5px;
+  font-size: 17px;
   color: var(--marromTexto);
   flex: 1;
 }
@@ -150,7 +150,7 @@
 
 .boasVindasLabel {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--marrom-claro);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -167,7 +167,7 @@
 
 .boasVindasEmail {
   margin: 6px 0 0;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--marrom-claro);
   font-family: "Poppins", sans-serif;
 }
@@ -179,7 +179,7 @@
 
 .sectionLabel {
   margin: 0 0 1rem;
-  font-size: 13px;
+  font-size: 15px;
   color: #854f0b;
   font-family: "Poppins", sans-serif;  
 }
@@ -190,7 +190,7 @@
   border: none;
   cursor: pointer;
   color: #854f0b;;
-  font-size: 13px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -459,7 +459,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--marrom-palido);
+  background: var(--creme-escuro);
   display: flex;
   align-items: center;
   justify-content: center;
