@@ -1,0 +1,615 @@
+:root {
+  --marrom-escuro: #3d2010;
+  --marrom-medio: #6b4226;
+  --marrom-claro: #9a7a5e;
+  --marrom-palido: #c9a882;
+  --creme-escuro: #f0e4d7;
+  --creme-medio: #f5ede4;
+  --creme-claro: #faf6f2;
+  --borda: #e8ddd5;
+  --borda-forte: #ddd0c4;
+}
+
+.pagina {
+  min-height: 100vh;
+  background: #f0e8df;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  display: flex;
+  flex: 1;
+  background: #fff;
+  margin: 1.5rem;
+  border-radius: 12px;
+  border: 0.5px solid var(--borda-forte);
+  overflow: hidden;
+  min-height: calc(100vh - 52px - 3rem);
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 0.5px solid var(--borda);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fff;
+}
+
+.sidebarUser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--marrom-palido);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--marrom-escuro);
+  flex-shrink: 0;
+}
+
+.sidebarNome {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.sidebarRole {
+  margin: 0;
+  font-size: 12px;
+  color: var(--marrom-claro);
+  font-family: "Poppins", sans-serif;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s;
+  font-family: "Poppins", sans-serif;
+}
+
+.sidebarItem:hover {
+  background: var(--creme-medio);
+}
+
+.sidebarItemActive {
+  background: var(--creme-medio);
+}
+
+.sidebarIcon {
+  color: var(--marrom-medio);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sidebarLabel {
+  font-size: 13.5px;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.sidebarItemActive .sidebarLabel {
+  font-weight: 600;
+  color: var(--marrom-escuro);
+}
+
+.sidebarChevron {
+  color: var(--marrom-claro);
+  display: flex;
+  align-items: center;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 0.5px solid var(--borda);
+}
+
+.sidebarItemLogout .sidebarIcon {
+  color: #c0392b;
+}
+
+.sidebarItemLogout .sidebarLabel {
+  color: #a32d2d;
+}
+
+.conteudo {
+  flex: 1;
+  padding: 2.5rem 3rem;
+  position: relative;
+}
+
+.boasVindas {
+  margin-bottom: 2.5rem;
+}
+
+.boasVindasLabel {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--marrom-claro);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: sans-serif;
+}
+
+.boasVindasNome {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.boasVindasEmail {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--marrom-claro);
+  font-family: sans-serif;
+}
+
+.ultimoPedidoSection {
+  border-top: 0.5px solid var(--borda);
+  padding-top: 1.5rem;
+}
+
+.sectionLabel {
+  margin: 0 0 1rem;
+  font-size: 13px;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.verTodos {
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marrom-medio);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-family: "Georgia", serif;
+  transition: color 0.2s;
+}
+
+.verTodos:hover {
+  color: var(--marrom-escuro);
+}
+
+.listaPedidos {
+  display: flex;
+  flex-direction: column;
+}
+
+.pedidoRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--borda);
+}
+
+.listaPedidos .pedidoRow:last-child {
+  border-bottom: none;
+}
+
+.pedidoIcone {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--creme-escuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--marrom-medio);
+  flex-shrink: 0;
+}
+
+.pedidoInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.pedidoNome {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pedidoMeta {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.pedidoAcoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-family: sans-serif;
+}
+
+.badge-entregue {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+
+.badge-em-rota {
+  background: #faeeda;
+  color: #854f0b;
+}
+
+.badge-processando {
+  background: #e6f1fb;
+  color: #185fa5;
+}
+
+.btnReceita {
+  background: var(--creme-medio);
+  border: 0.5px solid var(--marrom-palido);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--marrom-medio);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-family: "Georgia", serif;
+  transition: background 0.15s;
+}
+
+.btnReceita:hover {
+  background: var(--creme-escuro);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 20, 10, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalBox {
+  background: #fff;
+  border-radius: 12px;
+  border: 0.5px solid var(--borda-forte);
+  padding: 1.75rem;
+  width: 340px;
+  max-width: calc(100vw - 2rem);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modalTitulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.modalFechar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.modalFechar:hover {
+  color: #1a1a1a;
+}
+
+.receitaCard {
+  background: var(--creme-claro);
+  border: 0.5px solid var(--borda);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.receitaOlho {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.receitaGrade {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.receitaLabel {
+  margin: 0 0 2px;
+  font-size: 11px;
+  color: var(--marrom-claro);
+  font-family: sans-serif;
+}
+
+.receitaValor {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.receitaDivisor {
+  border-top: 0.5px solid var(--borda);
+  margin: 10px 0;
+}
+
+.receitaMeta {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.telaHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--borda);
+}
+
+.voltar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marrom-medio);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-family: "Georgia", serif;
+  transition: color 0.2s;
+}
+
+.voltar:hover {
+  color: var(--marrom-escuro);
+}
+
+.telaHeaderSep {
+  color: #ccc;
+  font-size: 13px;
+}
+
+.telaHeaderTitulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.editarForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 460px;
+}
+
+.editarAvatar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.avatarGrande {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--marrom-palido);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--marrom-escuro);
+  font-family: sans-serif;
+}
+
+.alterarFoto {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marrom-medio);
+  font-size: 13px;
+  padding: 0;
+  font-family: "Georgia", serif;
+  transition: color 0.2s;
+}
+
+.alterarFoto:hover {
+  color: var(--marrom-escuro);
+  text-decoration: underline;
+}
+
+.formGrade2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.formCampo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-size: 12px;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.formInput {
+  border: 0.5px solid var(--marrom-palido);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  font-family: "Georgia", serif;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formInput:focus {
+  border-color: var(--marrom-medio);
+}
+
+.formInput::placeholder {
+  color: #bbb;
+}
+
+.senhaSeparador {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--borda);
+}
+
+.senhaSubtitulo {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  font-family: sans-serif;
+}
+
+.formAcoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btnSalvar {
+  background: var(--marrom-medio);
+  color: var(--creme-medio);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: "Georgia", serif;
+  transition: background 0.2s;
+}
+
+.btnSalvar:hover {
+  background: var(--marrom-escuro);
+}
+
+.btnCancelar {
+  background: transparent;
+  color: var(--marrom-medio);
+  border: 0.5px solid var(--marrom-medio);
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: "Georgia", serif;
+  transition: background 0.2s;
+}
+
+.btnCancelar:hover {
+  background: var(--creme-medio);
+}
+
+.editarAvatarRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 6px;
+}
+
+.editarNomeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+.inputSenhaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputSenhaWrapper .formInput {
+  padding-right: 38px;
+}
+
+.btnOlho {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--marrom-claro);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.btnOlho:hover {
+  color: var(--marrom-escuro);
+}
