@@ -5,7 +5,7 @@ from .views import (RegisterView, OculosViewSet, ReservaViewSet,
                     PasswordResetConfirmView, AdminDashboardView,
                     MyTokenObtainPairView, CreateStaffView, EmailLoginView,
                     PromoteToStaffByEmailView, ExameAgendamentoViewSet, 
-                    CarrinhoViewSet)
+                    CarrinhoViewSet, ChangePasswordView, MeuPerfilView)
 from rest_framework.routers import DefaultRouter
 from .views import servir_arquivo_banco
 
@@ -27,4 +27,6 @@ urlpatterns = [
     path('admin/promote-by-email/<str:email>/', PromoteToStaffByEmailView.as_view(), name='promote_staff_email'),
     path('', include(router.urls)),
     path('arquivos/<int:pk>/', servir_arquivo_banco, name='arquivo-banco'),
+    path('change-password/', ChangePasswordView.as_view()),
+    path('me/', MeuPerfilView.as_view()),
 ]

@@ -21,12 +21,30 @@ export default function Navbar() {
   const { quantidade, shake } = useCarrinho();
 
   useEffect(() => {
-    setLogado(!!localStorage.getItem('access'));
-    setNomeUsuario(
-      localStorage.getItem('full_name') ||
-      localStorage.getItem('username') || ''
-    );
-    setCarregou(true);
+    function lerUsuario() {
+      setLogado(!!localStorage.getItem('access'));
+
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          setNomeUsuario(user.full_name || user.username || '');
+          setCarregou(true);
+          return;
+        } catch { }
+      }
+
+      setNomeUsuario(
+        localStorage.getItem('full_name') ||
+        localStorage.getItem('username') || ''
+      );
+      setCarregou(true);
+    }
+
+    lerUsuario();
+
+    window.addEventListener('storage', lerUsuario);
+    return () => window.removeEventListener('storage', lerUsuario);
   }, []);
 
   return (

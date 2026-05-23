@@ -20,7 +20,12 @@ export default function LoginPage() {
         const data = await response.json();
         localStorage.setItem('access', data.access);
         localStorage.setItem('refresh', data.refresh);
-        localStorage.setItem('full_name', data.full_name);  
+        localStorage.setItem('user', JSON.stringify({   // ← salva o objeto completo
+          username: data.username,
+          email: data.email,
+          full_name: data.full_name,
+          is_staff: data.is_staff,
+        }));  
         router.push('/');
       } else {
         const errorData = await response.json();

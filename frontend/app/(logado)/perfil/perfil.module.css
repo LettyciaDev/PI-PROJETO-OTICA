@@ -271,6 +271,11 @@
   font-family: "Poppins", sans-serif;
 }
 
+.badge-cancelada {
+  background: #fce8e8;
+  color: #a32d2d;
+}
+
 .badge-entregue {
   background: #e1f5ee;
   color: #0f6e56;

@@ -33,19 +33,19 @@
 }
 
 .sucesso {
-  background-color: var(--bg); 
+  background-color: #f6f4f1; 
   color: #10b981;
   border-left: 5px solid #10b981;
 }
 
 .erro {
-  background-color: var(--bg); 
+  background-color: #f6f4f1; 
   color: #7f1d1d; 
   border-left: 5px solid #7f1d1d; 
 }
 
 .aviso {
-  background-color: var(--bg); 
+  background-color: #f6f4f1; 
   color: #a94c00;
   border-left: 5px solid #a94c00;
 }

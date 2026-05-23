@@ -127,6 +127,76 @@ class PasswordResetConfirmView(views.APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": "Senha redefinida com sucesso."}, status=status.HTTP_200_OK)
+
+# redefinir senha no perfil!
+class ChangePasswordView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        senha_atual = request.data.get('senha_atual')
+        nova_senha = request.data.get('nova_senha')
+
+        if not senha_atual or not nova_senha:
+            return Response(
+                {'erro': 'Informe a senha atual e a nova senha.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not request.user.check_password(senha_atual):
+            return Response(
+                {'erro': 'Senha atual incorreta.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            from django.contrib.auth.password_validation import validate_password
+            validate_password(nova_senha, request.user)
+        except Exception as e:
+            return Response({'erro': list(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.set_password(nova_senha)
+        request.user.save()
+        return Response({'detail': 'Senha alterada com sucesso.'}, status=status.HTTP_200_OK)
+
+    
+#pegar nome completo!
+class MeuPerfilView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "username": user.username,
+            "email": user.email,
+            "full_name": f"{user.first_name} {user.last_name}".strip() or user.username,
+        })
+
+    def patch(self, request):
+        user = request.user
+        full_name = request.data.get("full_name", "").strip()
+        email = request.data.get("email", "").strip()
+
+        if full_name:
+            partes = full_name.split(" ", 1)
+            user.first_name = partes[0]
+            user.last_name = partes[1] if len(partes) > 1 else ""
+
+        if email:
+            if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+                return Response(
+                    {"erro": "Este e-mail já está em uso."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            user.email = email
+            user.username = email  
+
+        user.save()
+
+        return Response({
+            "username": user.username,
+            "email": user.email,
+            "full_name": f"{user.first_name} {user.last_name}".strip() or user.username,
+        }) 
     
 # oculos/views.py
 class OculosViewSet(viewsets.ModelViewSet):
