@@ -497,7 +497,7 @@
   border-radius: 8px;
   padding: 9px 12px;
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--marrom-medio);
   background: #fff;
   outline: none;
   font-family: "Poppins", sans-serif;

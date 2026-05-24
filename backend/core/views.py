@@ -89,9 +89,8 @@ class PasswordResetRequestView(views.APIView):
             # 2. Gera o Token temporário (baseado no estado atual do usuário)
             token = default_token_generator.make_token(user)
             
-            # 3. Monta a URL para o seu FRONTEND
-            # Substitua 'seuapp.com' pela URL real do seu front (ex: localhost:3000)
-            reset_url = f"https://seuapp.com/reset-password/{uid}/{token}/"
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            reset_url = f"{frontend_url}/reset-password/{uid}/{token}/"
             
             # 4. Envia o e-mail
             subject = "Recuperação de Senha - Minha API"

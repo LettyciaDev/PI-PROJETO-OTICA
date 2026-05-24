@@ -8,7 +8,7 @@
 
 .card {
   display: flex;
-  background-color: #f5f0ea;
+  background-color: var(--bg);
   border-radius: 16px;
   width: 860px;
   min-height: 480px;
@@ -51,7 +51,7 @@
 }
 
 .title {
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   color: #7a3e1e;
   margin-bottom: 24px;
   font-weight: 400;
@@ -61,11 +61,12 @@
 }
 
 .label {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   color: #7a3e1e;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   display: block;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input {
@@ -74,10 +75,11 @@
   background-color: #7a3e1e;
   border: none;
   border-radius: 6px;
-  color: #f5f0ea;
+  color: var(--bg);
   margin-bottom: 16px;
   font-size: 0.95rem;
   outline: none;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input::placeholder {
@@ -91,27 +93,29 @@
 
 .button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background-color: transparent;
   border: 1.5px solid #7a3e1e;
   border-radius: 6px;
   color: #7a3e1e;
   letter-spacing: 0.15em;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   cursor: pointer;
   margin-bottom: 20px;
   transition: all 0.2s;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .button:hover {
   background-color: #7a3e1e;
-  color: #f5f0ea;
+  color: var(--bg);
 }
 
 .redirect {
   font-size: 0.85rem;
   color: #7a3e1e;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .link {
@@ -122,6 +126,31 @@
 
 .link:hover {
   text-decoration: underline;
+}
+
+.senhaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputSenha {
+  width: 100%;
+  padding-right: 2.8rem;
+}
+
+.olhoBtn {
+  position: absolute;
+  right: 0.7rem;
+  top: 1rem;
+  bottom: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
 }
 
 @keyframes entrar {

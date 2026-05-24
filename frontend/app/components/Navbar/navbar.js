@@ -22,7 +22,14 @@ export default function Navbar() {
 
   useEffect(() => {
     function lerUsuario() {
-      setLogado(!!localStorage.getItem('access'));
+      const token = localStorage.getItem('access');
+      setLogado(!!token);
+
+      if (!token) {
+        setNomeUsuario('');
+        setCarregou(true);
+        return; 
+      }
 
       const userStr = localStorage.getItem('user');
       if (userStr) {
@@ -106,8 +113,8 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/login" className={styles.linkNav}>ENTRAR</Link>
-                <Link href="/cadastro" className={styles.linkNav}>CADASTRAR</Link>
+                <Link href="/login" className={styles.cadlog}>ENTRAR</Link>
+                <Link href="/cadastro" className={styles.cadlog}>CADASTRAR</Link>
               </>
             )
           )}

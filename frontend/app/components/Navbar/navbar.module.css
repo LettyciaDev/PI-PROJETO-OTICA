@@ -54,6 +54,22 @@
     color:#D4A373;
 }
 
+.cadlog{
+    color: var(--bg);
+    text-decoration: none;
+    font-family: "Forum", serif;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.12em;
+    white-space: nowrap; 
+    padding-left: 15px;
+}
+
+.cadlog:hover{
+    color:#D4A373;
+}
+
 .meuNome{
     color: var(--bg);
     font-family: "Merriweather", serif;

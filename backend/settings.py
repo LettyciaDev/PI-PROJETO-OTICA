@@ -152,6 +152,8 @@ SPECTACULAR_SETTINGS = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+FRONTEND_URL = "http://localhost:3000" 
+
 AUTHENTICATION_BACKENDS = [
     'backend.core.backends.EmailBackend',  # Substitua 'core' pelo nome exato da pasta do seu app
     'django.contrib.auth.backends.ModelBackend',

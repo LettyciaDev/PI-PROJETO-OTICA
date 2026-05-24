@@ -670,6 +670,7 @@ function TelaEditar({ onNavegar, usuario, onUsuarioAtualizado }) {
                 className={styles.formInput}
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
+                placeholder="Seu nome completo"
               />
             </div>
           </div>
@@ -682,6 +683,7 @@ function TelaEditar({ onNavegar, usuario, onUsuarioAtualizado }) {
             value={email}
             type="email"
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="seuemail@example.com"
           />
         </div>
 
@@ -826,6 +828,8 @@ export default function PerfilPage() {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
     localStorage.removeItem("user");
+    localStorage.removeItem("full_name");
+    localStorage.removeItem("username");   
     window.location.href = "/";
   }
 

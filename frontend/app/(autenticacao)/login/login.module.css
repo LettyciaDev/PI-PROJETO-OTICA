@@ -8,12 +8,13 @@
 
 .card {
   display: flex;
-  background-color: #f5f0ea;
+  background-color: var(--bg);
   border-radius: 16px;
   width: 860px;
   min-height: 480px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   overflow: hidden;
+  animation: entrar 0.6s ease;
 }
 
 .formSide {
@@ -25,7 +26,7 @@
 }
 
 .title {
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   color: #7a3e1e;
   margin-bottom: 24px;
   font-weight: 400;
@@ -35,10 +36,11 @@
 }
 
 .label {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   color: #7a3e1e;
-  margin-bottom: 4px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 8.5px;
   display: block;
 }
 
@@ -48,7 +50,8 @@
   background-color: #7a3e1e;
   border: none;
   border-radius: 6px;
-  color: #f5f0ea;
+  color: var(--bg);
+  font-family: 'Poppins', sans-serif;
   margin-bottom: 16px;
   font-size: 0.95rem;
   outline: none;
@@ -64,7 +67,8 @@
 }
 
 .forgot {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
+  font-family: 'Poppins', sans-serif;
   color: #7a3e1e;
   text-decoration: none;
   display: block;
@@ -77,27 +81,29 @@
 
 .button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background-color: transparent;
   border: 1.5px solid #7a3e1e;
   border-radius: 6px;
   color: #7a3e1e;
   letter-spacing: 0.15em;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
   margin-bottom: 20px;
   transition: all 0.2s;
 }
 
 .button:hover {
   background-color: #7a3e1e;
-  color: #f5f0ea;
+  color: var(--bg);
 }
 
 .redirect {
   font-size: 0.85rem;
   color: #7a3e1e;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .link {
@@ -135,6 +141,36 @@
   width: 150px;
 }
 
+.senhaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputSenha {
+  width: 100%;
+  padding-right: 2.8rem;
+}
+
+.olhoBtn {
+  position: absolute;
+  right: 0.7rem;
+  top: 1rem;
+  bottom: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  pointer-events: all;
+  opacity: 0.6;
+}
+
 @keyframes deslizarDireita {
   from {
     transform: translateX(100%);
@@ -143,5 +179,16 @@
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
