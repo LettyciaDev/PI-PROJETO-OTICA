@@ -43,6 +43,9 @@ export default function EsqueciSenhaPage() {
           <h1 className={styles.title}>Verifique seu e-mail</h1>
           <p className={styles.texto}>
             Se existe uma conta com esse e-mail, você receberá um link para redefinir sua senha em instantes.
+            <br></br>
+            <br></br>
+            Se não achou, verifique o seu spam!
           </p>
           <a href="/login" className={styles.link}>Voltar para o login</a>
         </div>
