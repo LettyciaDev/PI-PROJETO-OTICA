@@ -1,17 +1,50 @@
 .main {
   min-height: 100vh;
-  background-color: #000; /* Fundo de segurança */
+  background-color: #000;
 }
 
 .hero {
+  position: relative;
   min-height: 100vh;
-  background-image: url('/home/fotoHome.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+
+  color: white;
+}
+
+/* Vídeo de fundo */
+.videoBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  filter: brightness(0.8) contrast(1.1) saturate(1.2);
+
+  z-index: 0;
+}
+
+/* Overlay escuro premium */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  z-index: 1;
 }
 
 .navbar {
@@ -30,8 +63,8 @@
 }
 
 .navLinks li {
-  color: #d1b19a; /* Cor bege/dourada dos menus */
-  font-family: 'Times New Roman', serif; /* Ou a fonte específica da Vizzo */
+  color: #d1b19a;
+  font-family: 'Times New Roman', serif;
   font-size: 14pt;
   letter-spacing: 2px;
   cursor: pointer;
@@ -46,7 +79,12 @@
   flex: 1;
   display: flex;
   align-items: center;
-  padding-left: 10%; /* Recuo para o texto não colar na borda */
+  padding-left: 10%;
+
+  position: relative;
+  z-index: 2;
+
+  animation: fadeUp 2.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .heroContent h1 {
@@ -60,7 +98,7 @@
 }
 
 .highlight {
-  color: #d1b19a; /* Cor Bege do "PERFEITO" */
+  color: #d1b19a;
   font-weight: bold;
 }
 
@@ -70,17 +108,117 @@
   text-decoration-thickness: 1px;
 }
 
+.word {
+  display: inline-block;
+
+  opacity: 0;
+  transform: translateY(30px);
+
+  animation: revealWord 1.0s forwards;
+}
+
+.word:nth-child(1) {
+  animation-delay: 0.5s;
+}
+
+.word:nth-child(3) {
+  animation-delay: 1.3s;
+}
+
+.word:nth-child(5) {
+  animation-delay: 2.1s;
+}
+
+.word:nth-child(7) {
+  animation-delay: 2.9s;
+}
+
+.word:nth-child(8) {
+  animation-delay: 3.7s;
+}
+
 /* Responsividade Básica */
 @media (max-width: 768px) {
   .navbar {
     padding: 20px;
   }
-  
+
   .navLinks {
-    display: none; /* Em mobile você pode implementar um menu hamburguer depois */
+    display: none;
   }
 
   .heroContent h1 {
     font-size: 32pt;
   }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revealWord {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================= */
+/* COLEÇÕES */
+/* ========================= */
+
+.collections {
+  background: #9d6548;
+  padding: 100px 8%;
+}
+
+.collections h2 {
+  text-align: center;
+  color: #d8b39d;
+  font-size: 42px;
+  font-family: 'Times New Roman', serif;
+  margin-bottom: 70px;
+  letter-spacing: 3px;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 300px;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #c98a64;
+
+  transition: 0.4s;
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+.card img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+}
+
+.card h3 {
+  text-align: center;
+  padding: 20px;
+  color: #4b1d1d;
+  font-family: 'Times New Roman', serif;
+  font-size: 28px;
 }
