@@ -1,0 +1,40 @@
+.container{
+  padding: 50px;
+  background: #f5f1ed;
+  min-height: 100vh;
+}
+
+.titulo{
+  color: #6b3e26;
+  margin-bottom: 30px;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+}
+
+.input{
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  background: white;
+  outline: none;
+}
+
+.input:focus{
+  border-color: #eb7b20;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.15);
+}
+
+.botao{
+  padding: 14px;
+  background: #a86a46;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}

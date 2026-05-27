@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className={styles.direita}>
           <Link href="/pesquisa" className={styles.linkNavIcone}>
             <div className={styles.containerIcone}>
-              <IoIosSearch size={50} />
+              <IoIosSearch size={32} />
             </div>
           </Link>
 

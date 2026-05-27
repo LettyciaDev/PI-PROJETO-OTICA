@@ -1,0 +1,83 @@
+.container{
+  padding: 40px;
+  min-height: 100vh;
+  background: #f5f1ed;
+}
+
+.header{
+  margin-bottom: 35px;
+}
+
+.header h1{
+  font-size: 45px;
+  color: #6b3e26;
+  font-family: 'Times New Roman', serif;
+}
+
+.header p{
+  color: #777;
+  margin-top: 8px;
+}
+
+.form{
+  background: white;
+  padding: 30px;
+  border-radius: 24px;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.inputGroup{
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup label{
+  margin-bottom: 8px;
+  color: #6b3e26;
+  font-size: 15px;
+}
+
+.inputGroup input,
+.inputGroup select,
+.inputGroup textarea{
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+
+.inputGroup textarea{
+  min-height: 120px;
+  resize: none;
+  margin-top: 10px;
+}
+
+.botoes{
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancelar,
+.confirmar{
+  border: none;
+  padding: 14px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancelar{
+  background: #ddd;
+}
+
+.confirmar{
+  background: #a86a46;
+  color: white;
+}
