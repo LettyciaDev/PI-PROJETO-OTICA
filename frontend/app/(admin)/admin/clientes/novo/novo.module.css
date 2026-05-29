@@ -11,12 +11,14 @@
 .header h1{
   font-size: 45px;
   color: #6b3e26;
-  font-family: 'Times New Roman', serif;
+  font-family: 'Jomolhari', serif;
+  letter-spacing: 4px;
 }
 
 .header p{
   color: #777;
-  margin-top: 8px;
+  margin-top: -3px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .form{
@@ -39,7 +41,9 @@
 .inputGroup label{
   margin-bottom: 8px;
   color: #6b3e26;
-  font-size: 15px;
+  font-size: 17px;
+  color: var(--brown);
+  font-family: 'Joan', serif;
 }
 
 .inputGroup input,
@@ -47,9 +51,19 @@
 .inputGroup textarea{
   padding: 14px;
   border-radius: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(75, 50, 32, 0.4);
   font-size: 14px;
   outline: none;
+}
+
+.inputGroup input{
+  color: var(--marromTexto);
+  font-family: 'Poppins', sans-serif;
+}
+
+.inputGroup select{
+  color: var(--marromTexto);
+  font-family: 'Poppins', sans-serif;
 }
 
 .inputGroup textarea{
@@ -67,7 +81,7 @@
 .cancelar,
 .confirmar{
   border: none;
-  padding: 14px 22px;
+  padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
@@ -75,9 +89,16 @@
 
 .cancelar{
   background: #ddd;
+  font-family: 'Poppins', sans-serif;
 }
 
 .confirmar{
   background: #a86a46;
   color: white;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.confirmar:hover{
+  background: var(--brown);
 }

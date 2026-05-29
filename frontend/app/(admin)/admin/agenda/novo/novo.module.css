@@ -1,40 +1,102 @@
-.container{
+.container {
   padding: 50px;
   background: #f5f1ed;
   min-height: 100vh;
 }
 
-.titulo{
+.titulo {
+  font-size: 40px;
   color: #6b3e26;
-  margin-bottom: 30px;
+  font-family: 'Times New Roman', serif;
+  margin: 0 0 36px;
 }
 
-.form{
+.form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  max-width: 400px;
+  gap: 14px;
+  max-width: 480px;
 }
 
-.input{
+/* ── Seções internas ── */
+.secao {
+  font-family: 'Times New Roman', serif;
+  font-size: 22px;
+  color: #6b3e26;
+  margin: 8px 0 4px;
+}
+
+.divisor {
+  border: none;
+  border-top: 1px solid rgba(168, 106, 70, 0.2);
+  margin: 12px 0 4px;
+}
+
+/* ── Labels ── */
+.label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a86a46;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  margin-bottom: -6px;
+}
+
+/* ── Inputs ── */
+.input {
   padding: 14px;
   border-radius: 12px;
   border: 1px solid #ddd;
   font-size: 15px;
+  font-family: 'Poppins', sans-serif;
   background: white;
+  color: #444;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.input:focus{
-  border-color: #eb7b20;
-  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.15);
+.input:focus {
+  border-color: #a86a46;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.12);
 }
 
-.botao{
+.textarea {
   padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  background: white;
+  color: #444;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.textarea:focus {
+  border-color: #a86a46;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.12);
+}
+
+/* ── Botão ── */
+.botao {
+  padding: 16px;
   background: #a86a46;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.botao:hover:not(:disabled) {
+  background: #8d5636;
 }

@@ -318,3 +318,43 @@
 .linkReceita:hover {
   background-color: var(--brown-dark);
 }
+
+.inputBusca {
+  width: 400px; 
+  padding: 10px 16px;
+  border: 1px solid rgba(150, 90, 62, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #5C331E;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  margin-bottom: 0; 
+}
+
+.inputBusca:focus {
+  border-color: #965A3E;
+}
+
+.botaoPagina {
+  background: #fff;
+  border: 1px solid rgba(150, 90, 62, 0.3);
+  color: #965A3E;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+}
+
+.botaoPagina:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.botaoPagina:hover:not(:disabled) {
+  background: #965A3E;
+  color: #fff;
+}

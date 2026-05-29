@@ -1,44 +1,48 @@
-.container{
+.container {
   padding: 50px;
   background: #f5f1ed;
   min-height: 100vh;
 }
 
-.topo{
+.topo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
 }
 
-.topo h1{
+.title {
   font-size: 45px;
   color: #6b3e26;
   font-family: 'Times New Roman', serif;
+  margin: 0;
 }
 
-.botaoNovo{
+.botaoNovo {
   background: #a86a46;
   color: white;
-  text-decoration: none;
+  border: none;
+  cursor: pointer;
   padding: 14px 26px;
   border-radius: 18px;
   font-size: 18px;
-  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.3s;
 }
 
-.botaoNovo:hover{
+.botaoNovo:hover {
   background: #8d5636;
 }
 
-.stats{
+/* ── Cards ── */
+.cardsContainer {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
   margin-bottom: 50px;
 }
 
-.cardStat{
+.card {
   flex: 1;
   min-width: 220px;
   background: white;
@@ -46,124 +50,266 @@
   padding: 25px;
 }
 
-.cardStat h2{
-  font-size: 50px;
-  color: #a86a46;
-}
-
-.cardStat p{
+.cardTitle {
   color: #777;
   font-size: 17px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 8px;
 }
 
-.filtros{
-  display: flex;
-  gap: 20px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
+.cardValue {
+  font-size: 50px;
+  color: #a86a46;
+  font-family: 'Times New Roman', serif;
+  line-height: 1;
 }
 
-.filtros input,
-.filtros select{
+/* ── Busca ── */
+.inputBusca {
+  width: 400px;
   padding: 14px;
   border-radius: 14px;
   border: 1px solid #ddd;
   font-size: 15px;
-  min-width: 220px;
+  font-family: 'Poppins', sans-serif;
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.tabelaContainer{
+.inputBusca:focus {
+  border-color: #a86a46;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.12);
+}
+
+/* ── Tabela ── */
+.section {
   background: white;
   border-radius: 30px;
   overflow: hidden;
+  padding-bottom: 24px;
 }
 
-.tabela{
+.table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.tabela thead{
+.table thead {
   background: #a86a46;
 }
 
-.tabela th{
+.table th {
   color: white;
   padding: 18px;
   text-align: left;
   font-size: 17px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
 }
 
-.tabela td{
+.table td {
   padding: 18px;
   font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  color: #444;
   border-bottom: 1px solid #eee;
 }
 
-.tabela td span{
-  display: block;
-  color: #888;
-  margin-top: 5px;
-}
-
-.status{
-  padding: 8px 14px;
+/* ── Badge de status ── */
+.badge {
+  padding: 6px 14px;
   border-radius: 999px;
   color: white;
   font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  display: inline-block;
 }
 
-.pendente{
-  background: orange;
-}
+.pendente   { background: #e08c00; }
+.confirmado { background: #27ae60; }
+.cancelado  { background: #c61c09; }
+.concluido  { background: #6b3e26; }
 
-.confirmado{
-  background: #27ae60;
-}
-
-.cancelado{
-  background: #c61c09;
-}
-
-.acoes{
+/* ── Ações ── */
+.actions {
   display: flex;
   gap: 10px;
 }
 
-.acoes button{
+.actions button {
   border: none;
-  padding: 10px 14px;
+  padding: 10px 16px;
   font-size: 13px;
+  font-family: 'Poppins', sans-serif;
   border-radius: 12px;
   cursor: pointer;
   background: #a86a46;
   color: white;
+  transition: background 0.2s;
 }
 
-.tipo{
-  padding: 8px 14px;
-  border-radius: 999px;
+.actions button:hover {
+  background: #8d5636;
+}
+
+/* ── Paginação ── */
+.botaoPagina {
+  border: 1px solid rgba(168, 106, 70, 0.4);
+  background: white;
+  color: #965A3E;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.botaoPagina:hover:not(:disabled) {
+  background: #f5ede8;
+}
+
+.botaoPagina:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── Modal ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(107, 62, 38, 0.25);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 36px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.fechar {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.fechar:hover { color: #6b3e26; }
+
+.modalTitulo {
+  font-family: 'Times New Roman', serif;
+  color: #6b3e26;
+  font-size: 26px;
+  margin: 0 0 24px;
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.modalCampo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.modalLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a86a46;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+.modalValor {
+  font-size: 14px;
+  color: #444;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ── Formulário no modal de edição ── */
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.select,
+.inputModal {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  background: white;
+  color: #444;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.select:focus,
+.inputModal:focus {
+  border-color: #a86a46;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.12);
+}
+
+.textarea {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  color: #444;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.textarea:focus {
+  border-color: #a86a46;
+  box-shadow: 0 0 0 3px rgba(168, 106, 70, 0.12);
+}
+
+.botaoSalvar {
+  padding: 14px;
+  background: #a86a46;
   color: white;
-  font-size: 12px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
 }
 
-/* TIPOS */
-.consulta{
-  background: #0288e1;
-}
-
-.visita_tecnica{
-  background: #640988;
-}
-
-.boleto{
-  background: #4c2300;
-}
-
-.estoque{
-  background: #158a46;
-}
-
-.outro{
-  background: #7f8c8d;
+.botaoSalvar:hover:not(:disabled) {
+  background: #8d5636;
 }

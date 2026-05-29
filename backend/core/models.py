@@ -240,6 +240,12 @@ class ExameAgendamento(models.Model):
     def __str__(self):
         return f"Exame #{self.pk} — {self.nome_cliente} ({self.get_status_display()})"
     
+class PerfilUsuario(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return f"Perfil de {self.usuario.username}"
     
 @receiver(post_delete, sender=Reserva)
 def restaurar_estoque_ao_deletar(sender, instance, **kwargs):

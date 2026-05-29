@@ -5,7 +5,8 @@ from .views import (RegisterView, OculosViewSet, ReservaViewSet,
                     PasswordResetConfirmView, AdminDashboardView,
                     MyTokenObtainPairView, CreateStaffView, EmailLoginView,
                     PromoteToStaffByEmailView, ExameAgendamentoViewSet, 
-                    CarrinhoViewSet, ChangePasswordView, MeuPerfilView)
+                    CarrinhoViewSet, ChangePasswordView, MeuPerfilView,
+                    AdminClientesListView, AdminClienteDetalheView, AdminCriarClienteView)
 from rest_framework.routers import DefaultRouter
 from .views import servir_arquivo_banco
 
@@ -29,4 +30,7 @@ urlpatterns = [
     path('arquivos/<int:pk>/', servir_arquivo_banco, name='arquivo-banco'),
     path('change-password/', ChangePasswordView.as_view()),
     path('me/', MeuPerfilView.as_view()),
+    path('clientes/', AdminClientesListView.as_view(),   name='admin_clientes'),
+    path('clientes/novo/', AdminCriarClienteView.as_view(),   name='admin_clientes_criar'),
+    path('clientes/<int:pk>/', AdminClienteDetalheView.as_view(), name='admin_cliente_detalhe'),
 ]

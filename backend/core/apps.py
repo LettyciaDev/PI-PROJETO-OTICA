@@ -6,10 +6,11 @@ class CoreConfig(AppConfig):
     name = 'backend.core'
 
     def ready(self):
+        import backend.core.signals
         from apscheduler.schedulers.background import BackgroundScheduler
         from django_apscheduler.jobstores import DjangoJobStore
         from .tasks import cancelar_reservas_expiradas
-
+        
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(DjangoJobStore(), 'default')
 

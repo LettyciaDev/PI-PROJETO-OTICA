@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, viewsets, status, views
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
@@ -24,7 +25,10 @@ from .permissions import IsAdminUserOnly
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 
+User = get_user_model()
 
 class EmailLoginView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
@@ -298,21 +302,58 @@ class CarrinhoViewSet(viewsets.ModelViewSet):
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.select_related('usuario').prefetch_related('itens').all()
     serializer_class = ReservaSerializer
-    parser_classes = [JSONParser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status']
     search_fields = ['nome_cliente', 'usuario__username', 'usuario__email']
     ordering_fields = ['criado_em', 'atualizado_em', 'status']
     parser_classes = [MultiPartParser, FormParser, JSONParser]
-
+ 
     def get_permissions(self):
         if self.action in ['create', 'minhas_reservas']:
             return [IsAuthenticated()]
         return [IsAdminUser()]
-
+ 
+    # ── NOVO: sobrescreve list para incluir contagens por status ──────────────
+    def list(self, request, *args, **kwargs):
+        from django.db.models import Count
+ 
+        # Contagens globais (sem filtro de página/busca) sobre o queryset base
+        contagens = (
+            Reserva.objects
+            .values('status')
+            .annotate(total=Count('id'))
+        )
+        counts = {item['status']: item['total'] for item in contagens}
+ 
+        # Chama o list padrão (já aplica filtros, busca e paginação)
+        response = super().list(request, *args, **kwargs)
+ 
+        # Injeta as contagens na resposta (funciona com e sem paginação)
+        if isinstance(response.data, dict):
+            # Resposta paginada: { count, next, previous, results }
+            response.data['count_pendente']   = counts.get('pendente', 0)
+            response.data['count_confirmada'] = counts.get('confirmada', 0)
+            response.data['count_concluida']  = counts.get('concluida', 0)
+            response.data['count_cancelada']  = counts.get('cancelada', 0)
+        else:
+            # Resposta sem paginação: lista direta — encapsula
+            response.data = {
+                'count': len(response.data),
+                'count_pendente':   counts.get('pendente', 0),
+                'count_confirmada': counts.get('confirmada', 0),
+                'count_concluida':  counts.get('concluida', 0),
+                'count_cancelada':  counts.get('cancelada', 0),
+                'next': None,
+                'previous': None,
+                'results': response.data,
+            }
+ 
+        return response
+    # ─────────────────────────────────────────────────────────────────────────
+ 
     def perform_create(self, serializer):
         itens_carrinho = ItemCarrinho.objects.filter(usuario=self.request.user)
-        
+ 
         for item in itens_carrinho:
             try:
                 variante = OculosVarianteCor.objects.get(
@@ -322,21 +363,21 @@ class ReservaViewSet(viewsets.ModelViewSet):
                 variante.quantidade_estoque = max(0, variante.quantidade_estoque - item.quantidade)
                 variante.save()
             except OculosVarianteCor.DoesNotExist:
-                pass 
-
+                pass
+ 
         serializer.save(usuario=self.request.user)
         itens_carrinho.delete()
-
+ 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['itens'] = getattr(self, '_itens_data', [])
         return context
-
+ 
     def create(self, request, *args, **kwargs):
         itens_carrinho = ItemCarrinho.objects.filter(usuario=request.user)
         if not itens_carrinho.exists():
             return Response({'erro': 'Carrinho vazio.'}, status=status.HTTP_400_BAD_REQUEST)
-
+ 
         self._itens_data = [
             {
                 'oculos': item.oculos,
@@ -349,7 +390,7 @@ class ReservaViewSet(viewsets.ModelViewSet):
             for item in itens_carrinho
         ]
         return super().create(request, *args, **kwargs)
-
+ 
     @action(detail=True, methods=['patch'], url_path='status', permission_classes=[IsAdminUser])
     def atualizar_status(self, request, pk=None):
         reserva = self.get_object()
@@ -357,13 +398,13 @@ class ReservaViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(ReservaSerializer(reserva, context={'request': request}).data)
-
+ 
     @action(detail=False, methods=['get'], url_path='minhas', permission_classes=[IsAuthenticated])
     def minhas_reservas(self, request):
         reservas = Reserva.objects.filter(usuario=request.user).prefetch_related('itens')
         serializer = ReservaSerializer(reservas, many=True, context={'request': request})
         return Response(serializer.data)
-    
+
 # administrador
 class AdminDashboardView(views.APIView):
     permission_classes = [IsAdminUserOnly] # Apenas Staff
@@ -443,77 +484,38 @@ def servir_arquivo_banco(request, pk):
     return response
 
 class ExameAgendamentoViewSet(viewsets.ModelViewSet):
-    queryset = ExameAgendamento.objects.select_related('usuario').all()
+    queryset = ExameAgendamento.objects.all()
     serializer_class = ExameAgendamentoSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['status', 'periodo_preferido']
-    search_fields = ['nome_cliente', 'usuario__username', 'usuario__email']
+    search_fields = ['nome_cliente']
     ordering_fields = ['criado_em', 'data_preferencia', 'status']
 
     def get_permissions(self):
         if self.action == 'create':
-            return [IsAuthenticated()]
+            return [AllowAny()]  # Formulário público
         return [IsAdminUser()]
 
+    # perform_create simples — sem vínculo de usuário
     def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)
+        serializer.save()
 
     @action(detail=True, methods=['patch'], url_path='status', permission_classes=[IsAdminUser])
     def atualizar_status(self, request, pk=None):
-        """
-        PATCH /api/exames/{id}/status/
-        Admin atualiza status, data confirmada e retorno ao cliente.
-        Dispara e-mail + link WhatsApp automaticamente.
-        """
         exame = self.get_object()
         serializer = ExameStatusSerializer(exame, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # Envia e-mail se houver retorno ao cliente
-        if request.data.get('retorno_cliente'):
-            self._enviar_email_retorno(exame)
-
         return Response({
             **ExameAgendamentoSerializer(exame, context={'request': request}).data,
             'whatsapp_url': self._gerar_link_whatsapp(exame)
         })
-    
-    @action(detail=False, methods=['get'], url_path='meus', permission_classes=[IsAuthenticated])
-    def meus_exames(self, request):
-        """GET /api/exames/meus/ — retorna só os exames do usuário logado."""
-        exames = ExameAgendamento.objects.filter(usuario=request.user)
-        serializer = ExameAgendamentoSerializer(exames, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def _enviar_email_retorno(self, exame):
-        from django.core.mail import send_mail
-        from django.conf import settings
-
-        assunto = f"Atualização do seu agendamento de exame — #{exame.pk}"
-        mensagem = (
-            f"Olá {exame.nome_cliente},\n\n"
-            f"Seu agendamento foi atualizado.\n"
-            f"Status: {exame.get_status_display()}\n"
-            f"Data confirmada: {exame.data_confirmada or 'A definir'}\n\n"
-            f"Mensagem da ótica:\n{exame.retorno_cliente}\n\n"
-            f"Em caso de dúvidas, entre em contato conosco."
-        )
-        try:
-            send_mail(
-                assunto,
-                mensagem,
-                settings.DEFAULT_FROM_EMAIL,
-                [exame.usuario.email],
-                fail_silently=False,
-            )
-        except Exception:
-            pass  # Loga silenciosamente; não quebra a resposta da API
 
     def _gerar_link_whatsapp(self, exame):
         import urllib.parse
         numero = ''.join(filter(str.isdigit, exame.telefone_whatsapp))
-        if len(numero) == 11:  # DDD + número brasileiro
+        if not numero.startswith('55'):
             numero = f"55{numero}"
 
         mensagem = (
@@ -521,7 +523,123 @@ class ExameAgendamentoViewSet(viewsets.ModelViewSet):
             f"Seu agendamento de exame (#{exame.pk}) foi atualizado.\n"
             f"Status: {exame.get_status_display()}\n"
             f"Data confirmada: {exame.data_confirmada or 'A definir'}\n\n"
-            f"{exame.retorno_cliente}"
+            f"{exame.retorno_cliente or ''}"
         )
-        mensagem_encoded = urllib.parse.quote(mensagem)
-        return f"https://wa.me/{numero}?text={mensagem_encoded}"
+        return f"https://wa.me/{numero}?text={urllib.parse.quote(mensagem)}"
+
+class AdminClientesListView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        search = request.query_params.get('search', '').strip()
+        page   = int(request.query_params.get('page', 1))
+        limit  = 12
+
+        qs = User.objects.filter(is_staff=False).order_by('-date_joined')
+
+        if search:
+            qs = qs.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search)  |
+                Q(email__icontains=search)
+            )
+
+        total   = qs.count()
+        offset  = (page - 1) * limit
+        usuarios = qs[offset:offset + limit]
+
+        results = [
+            {
+                'id':       u.id,
+                'nome':     u.get_full_name() or u.username,
+                'email':    u.email,
+                'telefone': getattr(u, 'telefone', '') or '',
+                'status':   'Ativo' if u.is_active else 'Inativo',
+            }
+            for u in usuarios
+        ]
+
+        return Response({
+            'count':          total,
+            'count_ativos':   qs.filter(is_active=True).count(),
+            'count_inativos': qs.filter(is_active=False).count(),
+            'results':        results,
+        })
+
+
+class AdminClienteDetalheView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, pk):
+        try:
+            usuario = User.objects.get(pk=pk, is_staff=False)
+        except User.DoesNotExist:
+            return Response({'erro': 'Cliente não encontrado.'}, status=404)
+
+        nome   = request.data.get('nome', '').strip()
+        email  = request.data.get('email', '').strip()
+        status_val = request.data.get('status')
+
+        if nome:
+            partes = nome.split(' ', 1)
+            usuario.first_name = partes[0]
+            usuario.last_name  = partes[1] if len(partes) > 1 else ''
+
+        if email:
+            usuario.email = email
+
+        if status_val == 'Ativo':
+            usuario.is_active = True
+        elif status_val == 'Inativo':
+            usuario.is_active = False
+
+        usuario.save()
+
+        return Response({
+            'id':       usuario.id,
+            'nome':     usuario.get_full_name() or usuario.username,
+            'email':    usuario.email,
+            'telefone': getattr(usuario, 'telefone', '') or '',
+            'status':   'Ativo' if usuario.is_active else 'Inativo',
+        })
+
+
+class AdminCriarClienteView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        nome     = request.data.get('nome', '').strip()
+        email    = request.data.get('email', '').strip()
+        telefone = request.data.get('telefone', '').strip()
+        status_val = request.data.get('status', 'Ativo')
+
+        if not nome or not email:
+            return Response({'erro': 'Nome e e-mail são obrigatórios.'}, status=400)
+
+        if User.objects.filter(email=email).exists():
+            return Response({'erro': 'Já existe um usuário com esse e-mail.'}, status=400)
+
+        partes = nome.split(' ', 1)
+        import secrets, string
+        senha = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
+
+        usuario = User.objects.create_user(
+            username=email,
+            email=email,
+            first_name=partes[0],
+            last_name=partes[1] if len(partes) > 1 else '',
+            password=senha,
+            is_active=(status_val == 'Ativo'),
+        )
+
+        if hasattr(usuario, 'telefone') and telefone:
+            usuario.telefone = telefone
+            usuario.save()
+
+        return Response({
+            'id':       usuario.id,
+            'nome':     usuario.get_full_name(),
+            'email':    usuario.email,
+            'telefone': telefone,
+            'status':   'Ativo' if usuario.is_active else 'Inativo',
+        }, status=201)

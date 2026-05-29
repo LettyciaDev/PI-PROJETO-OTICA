@@ -14,21 +14,25 @@
 .topo h1{
   font-size: 45px;
   color: #6b3e26;
-  font-family: 'Times New Roman', serif;
+  font-family: 'Jomolhari', serif;
+  letter-spacing: 4px;
 }
 
 .topo p{
   color: #777;
-  margin-top: 5px;
+  margin-top: -10px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .botaoNovo{
   background: #a86a46;
-  color: white;
+  color: var(--bg);
   text-decoration: none;
   padding: 14px 24px;
   border-radius: 14px;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  border: none;
+  font-family: 'Poppins', sans-serif;
 }
 
 .botaoNovo:hover{
@@ -46,7 +50,7 @@
   flex: 1;
   min-width: 220px;
   background: white;
-  padding: 25px;
+  padding: 20px;
   border-radius: 24px;
 }
 
@@ -58,6 +62,7 @@
 .card p{
   color: #666;
   margin-top: 10px;
+  font-family: 'Jomolhari', serif;
 }
 
 .filtros{
@@ -79,6 +84,7 @@
   background: white;
   border-radius: 24px;
   overflow: hidden;
+  font-family: 'Poppins', sans-serif;
 }
 
 .tabela{
@@ -100,12 +106,20 @@
 .tabela td{
   padding: 18px;
   border-bottom: 1px solid #eee;
+  color: var(--brown-dark);
 }
 
 .status{
   padding: 8px 14px;
   border-radius: 999px;
   color: white;
+  font-size: 13px;
+}
+
+.statusVer{
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #fff;
   font-size: 13px;
 }
 
@@ -129,4 +143,142 @@
   background: #a86a46;
   color: white;
   cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.acoes button:hover{
+  background: #8e5839;
+}
+
+.inputBusca {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  min-width: 280px;
+  font-size: 14px;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+.botaoPagina {
+  border: 1px solid #a86a46;
+  background: white;
+  color: #a86a46;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.botaoPagina:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 36px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+}
+
+.fechar {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+}
+
+.modalTitulo {
+  font-size: 22px;
+  color: #6b3e26;
+  font-family: 'Jomolhari', serif;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+
+.modalGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalCampo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalLabel {
+  font-size: 16px;
+  color: var(--brown);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: 'Jomolhari', serif;
+}
+
+.modalValor {
+  font-size: 17px;
+  color: var(--brown-dark);
+  font-family: 'Poppins', sans-serif;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputModal {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.select {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.botaoSalvar {
+  background: #a86a46;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+  transition: 0.2s;
+}
+
+.botaoSalvar:hover {
+  background: #8e5839;
 }
