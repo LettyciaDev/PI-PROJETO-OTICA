@@ -1,6 +1,15 @@
+'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function AdminLayout({ children }) {
+  const pathname = usePathname();
+
+  function isActive(href) {
+    if (href === '/admin') return pathname === '/admin';
+    return pathname.startsWith(href);
+  }
+
   const styles = {
     layoutContainer: {
       display: 'flex',
@@ -78,7 +87,6 @@ export default function AdminLayout({ children }) {
       flex: 1,
       padding: '40px',
     },
-    /* --- ESTILOS DO FOOTER --- */
     footer: {
       backgroundColor: '#965A3E',
       color: '#FFFFFF',
@@ -143,12 +151,27 @@ export default function AdminLayout({ children }) {
       fontSize: '13px',
       opacity: 0.7,
     },
+    logoutButton: {
+      marginTop: '20px',
+      width: '100%',
+      height: '54px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      color: '#FFFFFF',
+      border: '1px solid rgba(255, 255, 255, 0.4)',
+      fontSize: '14px',
+      borderRadius: '8px',
+      letterSpacing: '2px',
+      textDecoration: 'none',
+      cursor: 'pointer',
+    },
   };
 
   return (
     <div style={styles.layoutContainer}>
-      
-      {/* Injeta regras CSS nativas para tratar os hovers sem precisar de JS no servidor */}
+
       <style dangerouslySetInnerHTML={{__html: `
         .maps-footer-link {
           color: #FFFFFF;
@@ -160,8 +183,12 @@ export default function AdminLayout({ children }) {
           opacity: 1 !important;
           text-decoration: underline !important;
         }
+        .admin-logout:hover {
+          background-color: #5C331E  !important;
+          border-color: #FFFFFF !important;
+        }
       `}} />
-      
+
       {/* BARRA LATERAL (SIDEBAR) */}
       <aside style={styles.sidebar}>
 
@@ -171,27 +198,40 @@ export default function AdminLayout({ children }) {
         </div>
 
         <nav style={styles.navMenu}>
-          <Link href="/admin/produtos" style={styles.navButton}>
+          <Link href="/admin/produtos" style={{ ...styles.navButton, ...(isActive('/admin/produtos') ? styles.activeButton : {}) }}>
             PRODUTOS
           </Link>
-          <Link href="/admin/reservas" style={styles.navButton}>
+          <Link href="/admin/reservas" style={{ ...styles.navButton, ...(isActive('/admin/reservas') ? styles.activeButton : {}) }}>
             RESERVAS
           </Link>
-          <Link href="/admin/agenda" style={styles.navButton}>
+          <Link href="/admin/agenda" style={{ ...styles.navButton, ...(isActive('/admin/agenda') ? styles.activeButton : {}) }}>
             AGENDA
           </Link>
-          <Link href="/admin/clientes" style={styles.navButton}>
+          <Link href="/admin/clientes" style={{ ...styles.navButton, ...(isActive('/admin/clientes') ? styles.activeButton : {}) }}>
             CLIENTES
           </Link>
-          <Link href="/admin" style={{ ...styles.navButton, ...styles.activeButton }}>
+          <Link href="/admin" style={{ ...styles.navButton, ...(isActive('/admin') ? styles.activeButton : {}) }}>
             DASHBOARD
           </Link>
+          <button
+            className="admin-logout"
+            onClick={() => {
+              localStorage.removeItem('access');
+              localStorage.removeItem('refresh');
+              localStorage.removeItem('user');
+              document.cookie = 'access=; path=/; max-age=0';
+              window.location.href = '/';
+            }}
+            style={{ ...styles.logoutButton }}
+          >
+            SAIR
+          </button>
         </nav>
       </aside>
 
       {/* ÁREA DA DIREITA (CONTEÚDO + FOOTER) */}
       <div style={styles.rightArea}>
-        
+
         <main style={styles.mainContent}>
           {children}
         </main>

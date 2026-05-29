@@ -419,7 +419,7 @@ export default function Home() {
 {/* AGENDAMENTO */}
 {/* ========================= */}
 
-<section className={styles.scheduleSection}>
+<section id="agendamento" className={styles.scheduleSection}>
 
   <div className={styles.scheduleLeft}>
 
@@ -509,7 +509,7 @@ export default function Home() {
 {/* WHATSAPP CTA */}
 {/* ========================= */}
 
-<section className={styles.whatsappSection}>
+<section id="contato" className={styles.whatsappSection}>
 
   <div className={styles.whatsappContent}>
 

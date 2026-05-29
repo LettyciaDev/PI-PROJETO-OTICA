@@ -9,9 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "date-fns": "^4.2.1",
-    "lucide-react": "^1.16.0",
+    "date-fns": "^3.6.0",
     "framer-motion": "^12.40.0",
+    "lucide-react": "^1.16.0",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-day-picker": "^8.10.1",

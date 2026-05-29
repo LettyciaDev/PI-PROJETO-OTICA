@@ -829,7 +829,8 @@ export default function PerfilPage() {
     localStorage.removeItem("refresh");
     localStorage.removeItem("user");
     localStorage.removeItem("full_name");
-    localStorage.removeItem("username");   
+    localStorage.removeItem("username"); 
+    document.cookie = 'access=; path=/; max-age=0';  
     window.location.href = "/";
   }
 

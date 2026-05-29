@@ -73,8 +73,8 @@ export default function Navbar() {
         <div className={styles.centro}>
           <Link href="/" className={styles.linkNav}>HOME</Link>
           <Link href="/produtos" className={styles.linkNav}>PRODUTOS</Link>
-          <Link href="/agendar-exames" className={styles.linkNav}>AGENDAR EXAMES</Link>
-          <Link href="/contato" className={styles.linkNav}>CONTATO</Link>
+          <Link href="/#agendamento" className={styles.linkNav}>AGENDAR EXAMES</Link>
+          <Link href="/#contato" className={styles.linkNav}>CONTATO</Link>
         </div>
 
         <div className={styles.direita}>

@@ -44,8 +44,12 @@ export default function LoginPage() {
           full_name: data.full_name,
           is_staff: data.is_staff,
         }));
+
+        document.cookie = `access=${data.access}; path=/; max-age=3600; SameSite=Lax`;
+
         mostrarToast('Login realizado com sucesso!', 'sucesso');
-        setTimeout(() => router.push('/'), 1000);
+        const destino = data.is_staff ? '/admin' : '/';
+        setTimeout(() => router.push(destino), 1000);
       } else {
         if (response.status === 401 || response.status === 400) {
           mostrarToast('E-mail ou senha incorretos.', 'erro');
