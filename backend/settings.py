@@ -5,22 +5,17 @@ import os
 
 load_dotenv(override=True)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 LOGIN_REDIRECT_URL = '/api/'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+
+FRONTEND_URL = "https://vizzootica.com"
 
 # Application definition
 
@@ -107,6 +102,8 @@ STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://vizzootica.com",
+    "https://www.vizzootica.com",
 ]
 
 REST_FRAMEWORK = {
@@ -151,8 +148,6 @@ SPECTACULAR_SETTINGS = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-FRONTEND_URL = "http://localhost:3000" 
 
 AUTHENTICATION_BACKENDS = [
     'backend.core.backends.EmailBackend',  # Substitua 'core' pelo nome exato da pasta do seu app
