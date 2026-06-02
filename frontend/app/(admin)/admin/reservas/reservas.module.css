@@ -1,360 +1,161 @@
 .container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  font-family: 'Times New Roman', Times, serif;
+  padding: 50px;
+  background: #f5f1ed;
+  min-height: 100vh;
 }
 
-.title {
-  color: #965A3E;
-  font-size: 36px;
-  font-weight: 400;
-  margin-bottom: 40px;
-  font-family: 'Times New Roman', Times, serif;
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
 }
 
-/* CARDS RESUMO */
-.cardsContainer {
+.topo h1 {
+  font-size: 45px;
+  color: #6b3e26;
+  font-family: 'Times New Roman', serif;
+  font-weight: bold;
+}
+
+/* CARDS */
+
+.stats {
   display: flex;
   gap: 30px;
-  margin-bottom: 40px;
   flex-wrap: wrap;
+  margin-bottom: 50px;
 }
 
-.card {
-  background-color: #FFFFFF;
-  padding: 24px 32px;
+.cardStat {
+  flex: 1;
   min-width: 220px;
-  border: 1px solid rgba(150, 90, 62, 0.12);
-  box-shadow: 0px 4px 12px rgba(150, 90, 62, 0.06);
-  border-radius: 12px;
-  text-align: center;
+  background: white;
+  border-radius: 24px;
+  padding: 35px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.cardTitle {
-  font-size: 15px;
-  letter-spacing: 2px;
-  color: #965A3E;
-  text-transform: uppercase;
-  font-family: 'Jomolhari, serif';
+.cardStat h2 {
+  font-size: 70px;
+  color: #a86a46;
+  line-height: 1;
+  margin-bottom: 12px;
+  font-family: 'Times New Roman', serif;
 }
 
-.cardValue {
-  font-size: 44px;
-  color: #5C331E;
-}
-
-/* SEÇÃO */
-.section {
-  background: #FFFFFF;
-  border: 1px solid rgba(150, 90, 62, 0.15);
-  border-radius: 12px;
-  padding: 30px 40px;
-  box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.03);
+.cardStat p {
+  color: #6f6f6f;
+  font-size: 20px;
+  margin: 0;
 }
 
 /* TABELA */
-.table {
+
+.tabelaContainer {
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.tabela {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table th {
+.tabela thead {
+  background: #a86a46;
+}
+
+.tabela th {
+  color: white;
+  padding: 20px;
   text-align: left;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: normal;
-  font-family: Jomolhari, serif;
-  color: #965A3E;
-  border-bottom: 1px solid rgba(150, 90, 62, 0.3);
-  padding-bottom: 12px;
+
+  font-size: 17px;
+  font-weight: 600;
 }
 
-.table td {
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(150, 90, 62, 0.08);
-  color: #5C331E;
-  font-size: 14px;
-  font-family: 'Poppins', sans-serif;
+.tabela td {
+  padding: 20px;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  color: #444;
 }
 
-/* BADGES STATUS */
-.badge {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  border: 1px solid;
-  
+.tabela tr:last-child td {
+  border-bottom: none;
+}
+
+/* STATUS */
+
+.status {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .andamento {
-  background: #EBF3F9;
-  color: #1976D2;
-  border-color: rgba(25, 118, 210, 0.2);
+  background: orange;
 }
 
 .cancelada {
-  background: #FDF0F0;
-  color: #D32F2F;
-  border-color: rgba(211, 47, 47, 0.2);
+  background: #c61c09;
 }
 
 .concluida {
-  background: #EBF7EE;
-  color: #2F7A4A;
-  border-color: rgba(47, 122, 74, 0.2);
+  background: #27ae60;
 }
 
 /* AÇÕES */
-.actions button {
-  background: #965A3E;
-  color: var(--bg);
-  border: none;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 12.5px;
-  cursor: pointer;
-  margin-right: 6px;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.3s ease;
-}
 
-.actions button:hover {
-  background: #7d4b34;
-}
-
-/* MODAL */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+.acoes {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 24px;
-}
-
-.modal {
-  background: #fff;
-  border-radius: 16px;
-  padding: 36px 40px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: relative;
-}
-
-.fechar {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #965A3E;
-  cursor: pointer;
-  line-height: 1;
-}
-
-.fechar:hover {
-  color: #5C331E;
-}
-
-.modalTitulo {
-  color: #965A3E;
-  font-size: 24px;
-  font-weight: 400;
-  margin: 0 0 24px 0;
-}
-
-/* GRID DO MODAL VER */
-.modalGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-  margin-bottom: 24px;
-}
-
-.fullWidth {
-  grid-column: 1 / -1;
-}
-
-.modalCampo {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-family: 'Poppins', sans-serif;
-} 
-
-.modalLabel {
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #965A3E;
-  font-family: 'Jomolhari', serif;
-}
-
-.modalValor {
-  font-size: 14px;
-  color: #5C331E;
-}
-
-.link {
-  font-size: 13px;
-  color: #965A3E;
-  text-decoration: underline;
-}
-
-/* ÓCULOS NO MODAL */
-.itensBloco {
-  border-top: 1px solid rgba(150, 90, 62, 0.15);
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
   gap: 10px;
 }
 
-.itensList {
-  list-style: none;
-  margin: -3;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.itemLinha {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  background: #fdf8f5;
-  border: 1px solid rgba(150, 90, 62, 0.1);
-  border-radius: 8px;
-  font-size: 13px;
-  color: #5C331E;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* FORMULÁRIO DO MODAL EDITAR */
-.modalForm {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.select,
-.input,
-.textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid rgba(150, 90, 62, 0.3);
-  border-radius: 8px;
-  font-size: 13px;
-  color: #5C331E;
-  font-family: 'Poppins', sans-serif;
-  background: #fff;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.select:focus,
-.input:focus,
-.textarea:focus {
-  border-color: #965A3E;
-}
-
-.textarea {
-  resize: vertical;
-}
-
-.botaoSalvar {
-  margin-top: 8px;
-  background: #965A3E;
-  color: #fff;
+.acoes button {
   border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 15px;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.botaoSalvar:hover {
-  background: #7d4b34;
-}
-
-.receitaBloco {
-  border-top: 1px solid rgba(150, 90, 62, 0.15);
-  padding-top: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.linkReceita {
-  display: inline-block;
-  background-color: #5C331E;
+  padding: 10px 14px;
+  font-size: 13px;
   border-radius: 12px;
-  padding: 10px 13px;
-  margin: 0 130px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--bg);
-  text-decoration: none;
   cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.3s ease;
+  background: #a86a46;
+  color: white;
+  transition: 0.3s;
 }
 
-.linkReceita:hover {
-  background-color: var(--brown-dark);
+.acoes button:hover {
+  background: #8d5636;
 }
 
-.inputBusca {
-  width: 400px; 
-  padding: 10px 16px;
-  border: 1px solid rgba(150, 90, 62, 0.3);
-  border-radius: 8px;
-  font-size: 13px;
-  color: #5C331E;
-  font-family: 'Poppins', sans-serif;
-  background: #fff;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  margin-bottom: 0; 
-}
+/* RESPONSIVO */
 
-.inputBusca:focus {
-  border-color: #965A3E;
-}
+@media (max-width: 768px) {
+  .container {
+    padding: 25px;
+  }
 
-.botaoPagina {
-  background: #fff;
-  border: 1px solid rgba(150, 90, 62, 0.3);
-  color: #965A3E;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-}
+  .topo h1 {
+    font-size: 48px;
+  }
 
-.botaoPagina:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+  .stats {
+    flex-direction: column;
+  }
 
-.botaoPagina:hover:not(:disabled) {
-  background: #965A3E;
-  color: #fff;
+  .cardStat h2 {
+    font-size: 55px;
+  }
+
+  .tabelaContainer {
+    overflow-x: auto;
+  }
+
+  .tabela {
+    min-width: 700px;
+  }
 }
