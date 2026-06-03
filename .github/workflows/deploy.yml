@@ -30,5 +30,6 @@ jobs:
             # Frontend
             cd frontend
             npm install
+            echo "NEXT_PUBLIC_API_URL=https://vizzootica.com/api" > .env.production
             npm run build
             pm2 restart nextjs
