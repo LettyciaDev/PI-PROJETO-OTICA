@@ -2,6 +2,7 @@
 
 import styles from './page.module.css';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -49,39 +50,47 @@ export default function Home() {
         </motion.h2>
 
         <div className={styles.cards}>
-          <motion.div
-            className={styles.card}
-            initial={{ opacity: 0, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.0 }}
-            viewport={{ once: true }} 
-          >
-            <img src="/home/feminino.jpeg" alt="Feminino" />
-            <h3>FEMININO</h3>
-          </motion.div>
 
-          <motion.div
-            className={styles.card}
-            initial={{ opacity: 0, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <img src="/home/masculino.webp" alt="Masculino" />
-            <h3>MASCULINO</h3>
-          </motion.div>
+          <Link href="/produtos" style={{ textDecoration: 'none' }}>
+            <motion.div
+              className={styles.card}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.0 }}
+              viewport={{ once: true }} 
+            >
+              <img src="/home/feminino.jpeg" alt="Feminino" />
+              <h3>FEMININO</h3>
+            </motion.div>
+          </Link>
 
-          <motion.div
-            className={styles.card}
-            initial={{ opacity: 0, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
-            viewport={{ once: true }}
-            
-          >
-            <img src="/home/infantil.jpg" alt="Infantil" />
-            <h3>INFANTIL</h3>
-          </motion.div>
+          <Link href="/produtos" style={{ textDecoration: 'none' }}>
+            <motion.div
+              className={styles.card}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <img src="/home/masculino.webp" alt="Masculino" />
+              <h3>MASCULINO</h3>
+            </motion.div>
+          </Link>
+
+          <Link href="/produtos" style={{ textDecoration: 'none' }}>
+            <motion.div
+              className={styles.card}
+              initial={{ opacity: 0, y: 100 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.4 }}
+              viewport={{ once: true }}
+              
+            >
+              <img src="/home/infantil.jpg" alt="Infantil" />
+              <h3>INFANTIL</h3>
+            </motion.div>
+          </Link>
+
         </div>
       </section>
 
@@ -295,7 +304,7 @@ export default function Home() {
 
         <strong>R$ 669,90</strong>
 
-        <button>Reservar</button>
+        <Link href="/produtos"><button>Reservar</button></Link>
       </div>
     </motion.div>
 
@@ -319,7 +328,7 @@ export default function Home() {
 
         <strong>R$ 759,90</strong>
 
-        <button>Reservar</button>
+        <Link href="/produtos"><button>Reservar</button></Link>
       </div>
     </motion.div>
 
@@ -343,7 +352,7 @@ export default function Home() {
 
         <strong>R$ 459,90</strong>
 
-        <button>Reservar</button>
+        <Link href="/produtos"><button>Reservar</button></Link>
       </div>
     </motion.div>
 
@@ -365,7 +374,7 @@ export default function Home() {
 
         <strong>R$ 529,90</strong>
 
-        <button>Reservar</button>
+        <Link href="/produtos"><button>Reservar</button></Link>
       </div>
     </motion.div>
 
@@ -407,10 +416,11 @@ export default function Home() {
 
     </div>
 
-    <button className={styles.promoButton}>
-      RESERVAR AGORA
-    </button>
-
+    <Link href="/produtos">
+      <button className={styles.promoButton}>
+        RESERVAR AGORA
+      </button>
+    </Link>
   </div>
 
 </section>
@@ -522,10 +532,11 @@ export default function Home() {
       </p>
     </div>
 
-    <button className={styles.whatsappButton}>
-      Iniciar conversa
-    </button>
-
+    <a href="https://wa.me/5581984384624">
+      <button className={styles.whatsappButton}>
+        Iniciar conversa
+      </button>
+    </a>
   </div>
 
 </section>

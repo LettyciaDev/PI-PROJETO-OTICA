@@ -12,7 +12,7 @@
 }
 
 :root {
-  --navbar:red; /* #9B5C42 */
+  --navbar: #9B5C42;
   --bg: #f5ede0;
   --marromTexto: #4B3220;
   --surface: #ffffff;
