@@ -96,6 +96,7 @@ export default function ClientesAdmin() {
   }
 
   async function salvarEdicao() {
+    console.log('salvando...', { editNome, editTelefone, editEmail, editStatus });
     if (salvando) return;
     setSalvando(true);
     try {
@@ -110,18 +111,20 @@ export default function ClientesAdmin() {
         }),
       });
 
+      console.log('status da resposta:', res.status);
+
       if (!res.ok) {
         const erro = await res.json();
+        console.log('erro do backend:', erro);
         mostrarToast(erro.erro ?? 'Erro ao salvar.', 'erro');
         return;
       }
 
       const atualizado = await res.json();
+      console.log('resposta do backend:', atualizado);
 
-      // atualiza o item na lista localmente, sem novo fetch
       setClientes(prev => prev.map(c => c.id === atualizado.id ? atualizado : c));
 
-      // atualiza os counts localmente também
       setCounts(prev => {
         if (editStatus === atualizado.status) return prev;
         const foiAtivar = atualizado.status === 'Ativo';
@@ -134,8 +137,8 @@ export default function ClientesAdmin() {
 
       mostrarToast('Cliente atualizado!', 'sucesso');
       setModalEditar(null);
-      // sem fetchClientes aqui — a lista já foi atualizada localmente
-    } catch {
+    } catch (err) {
+      console.log('erro de conexão:', err);
       mostrarToast('Erro de conexão.', 'erro');
     } finally {
       setSalvando(false);
