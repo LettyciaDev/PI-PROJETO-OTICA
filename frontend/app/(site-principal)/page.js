@@ -14,6 +14,7 @@ export default function Home() {
           muted
           playsInline
           disablePictureInPicture
+          preload="auto"
           controlsList="nodownload noplaybackrate"         
           className={styles.videoBackground}
         >
