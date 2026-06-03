@@ -17,6 +17,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/PI-PROJETO-OTICA
+            git stash
             git pull origin main
             
             # Backend
@@ -31,5 +32,5 @@ jobs:
             cd frontend
             npm install
             echo "NEXT_PUBLIC_API_URL=https://vizzootica.com/api" > .env.production
-            npm run build
+            NEXT_PUBLIC_API_URL=https://vizzootica.com/api npm run build
             pm2 restart nextjs
