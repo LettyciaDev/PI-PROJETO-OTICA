@@ -22,7 +22,6 @@ function StarRating({ rating = 4, count = 0 }) {
 }
 
 function ProdutoCard({ oculos }) {
-  // Pega a primeira imagem principal disponível entre as variantes
   const imagemPrincipal = useMemo(() => {
     for (const variante of oculos.variantes || []) {
       const principal = variante.imagens?.find((img) => img.e_principal);
@@ -125,10 +124,9 @@ export default function ProdutosPage() {
       try {
         setLoading(true);
         const params = busca ? `?search=${encodeURIComponent(busca)}` : '';
-        const res = await fetch(`${API_BASE}/api/produtos/${params}`);
+        const res = await fetch(`${API_BASE}/produtos/${params}`);
         if (!res.ok) throw new Error('Erro ao carregar produtos');
         const data = await res.json();
-        // suporte a paginação ou array direto
         setProdutos(Array.isArray(data) ? data : data.results || []);
       } catch (e) {
         setErro(e.message);
@@ -171,7 +169,6 @@ export default function ProdutosPage() {
 
   return (
     <div className={styles.pagina}>
-      {/* BREADCRUMB */}
       <div className={styles.breadcrumb}>
         <Link href="/" className={styles.breadcrumbLink}>Home</Link>
         <span className={styles.breadcrumbSep}>&gt;</span>
@@ -179,9 +176,7 @@ export default function ProdutosPage() {
       </div>
 
       <div className={styles.layout}>
-        {/* SIDEBAR FILTROS */}
         <aside className={styles.sidebar}>
-          {/* Busca */}
           <div className={styles.buscaWrap}>
             <input
               type="text"
@@ -257,7 +252,6 @@ export default function ProdutosPage() {
           )}
         </aside>
 
-        {/* GRID PRODUTOS */}
         <main className={styles.conteudo}>
           {loading && (
             <div className={styles.estado}>
