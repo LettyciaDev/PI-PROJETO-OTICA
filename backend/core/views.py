@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
-from .models import Oculos, Reserva, ExameAgendamento, ItemCarrinho, OculosVarianteCor
+from .models import Oculos, Reserva, ExameAgendamento, ItemCarrinho, OculosVarianteCor, PerfilUsuario
 from .serializers import (RegisterSerializer, OculosSerializer, ReservaSerializer,
                           ReservaStatusSerializer, PasswordResetRequestSerializer,
                           PasswordResetConfirmSerializer, MyTokenObtainPairSerializer,
@@ -84,19 +84,13 @@ class PasswordResetRequestView(views.APIView):
         email = serializer.validated_data['email']
         user = User.objects.filter(email=email).first()
 
-        # Por segurança, mesmo que o usuário não exista, retornamos 200
-        # para evitar "enumeração de e-mails" por atacantes.
         if user:
-            # 1. Gera o UID (ID do usuário em Base64)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            
-            # 2. Gera o Token temporário (baseado no estado atual do usuário)
             token = default_token_generator.make_token(user)
             
             frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
             reset_url = f"{frontend_url}/reset-password/{uid}/{token}/"
             
-            # 4. Envia o e-mail
             subject = "Recuperação de Senha - Minha API"
             message = f"Olá {user.username},\n\nVocê solicitou a alteração de senha. Clique no link abaixo para definir uma nova:\n{reset_url}\n\nSe você não solicitou isso, ignore este e-mail."
             
@@ -131,7 +125,6 @@ class PasswordResetConfirmView(views.APIView):
         serializer.save()
         return Response({"detail": "Senha redefinida com sucesso."}, status=status.HTTP_200_OK)
 
-# redefinir senha no perfil!
 class ChangePasswordView(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -162,7 +155,6 @@ class ChangePasswordView(views.APIView):
         return Response({'detail': 'Senha alterada com sucesso.'}, status=status.HTTP_200_OK)
 
     
-#pegar nome completo!
 class MeuPerfilView(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -201,7 +193,6 @@ class MeuPerfilView(views.APIView):
             "full_name": f"{user.first_name} {user.last_name}".strip() or user.username,
         }) 
     
-# oculos/views.py
 class OculosViewSet(viewsets.ModelViewSet):
     queryset = Oculos.objects.all().order_by('-criado_em')
     serializer_class = OculosSerializer
@@ -243,7 +234,6 @@ class CarrinhoViewSet(viewsets.ModelViewSet):
         serializer.save(usuario=self.request.user)
 
     def _get_estoque(self, oculos_id, cor):
-        """Retorna quantidade_estoque da variante ou None se não encontrar."""
         try:
             variante = OculosVarianteCor.objects.get(oculos_id=oculos_id, cor=cor)
             return variante.quantidade_estoque
@@ -313,11 +303,9 @@ class ReservaViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated()]
         return [IsAdminUser()]
  
-    # ── NOVO: sobrescreve list para incluir contagens por status ──────────────
     def list(self, request, *args, **kwargs):
         from django.db.models import Count
  
-        # Contagens globais (sem filtro de página/busca) sobre o queryset base
         contagens = (
             Reserva.objects
             .values('status')
@@ -325,18 +313,14 @@ class ReservaViewSet(viewsets.ModelViewSet):
         )
         counts = {item['status']: item['total'] for item in contagens}
  
-        # Chama o list padrão (já aplica filtros, busca e paginação)
         response = super().list(request, *args, **kwargs)
  
-        # Injeta as contagens na resposta (funciona com e sem paginação)
         if isinstance(response.data, dict):
-            # Resposta paginada: { count, next, previous, results }
             response.data['count_pendente']   = counts.get('pendente', 0)
             response.data['count_confirmada'] = counts.get('confirmada', 0)
             response.data['count_concluida']  = counts.get('concluida', 0)
             response.data['count_cancelada']  = counts.get('cancelada', 0)
         else:
-            # Resposta sem paginação: lista direta — encapsula
             response.data = {
                 'count': len(response.data),
                 'count_pendente':   counts.get('pendente', 0),
@@ -349,7 +333,6 @@ class ReservaViewSet(viewsets.ModelViewSet):
             }
  
         return response
-    # ─────────────────────────────────────────────────────────────────────────
  
     def perform_create(self, serializer):
         itens_carrinho = ItemCarrinho.objects.filter(usuario=self.request.user)
@@ -405,9 +388,8 @@ class ReservaViewSet(viewsets.ModelViewSet):
         serializer = ReservaSerializer(reservas, many=True, context={'request': request})
         return Response(serializer.data)
 
-# administrador
 class AdminDashboardView(views.APIView):
-    permission_classes = [IsAdminUserOnly] # Apenas Staff
+    permission_classes = [IsAdminUserOnly]
 
     @extend_schema(
         summary="Área do Administrador",
@@ -424,7 +406,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 class CreateStaffView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = StaffRegistrationSerializer
-    permission_classes = [IsAdminUserOnly] # TRAVA DE SEGURANÇA: Só staff entra aqui
+    permission_classes = [IsAdminUserOnly]
 
     @extend_schema(
         summary="Adicionar novo membro da equipe",
@@ -458,7 +440,6 @@ class PromoteToStaffByEmailView(views.APIView):
     )
     def post(self, request, email):
         try:
-            # Buscamos pelo campo email
             user = User.objects.get(email=email)
             user.is_staff = True
             user.save()
@@ -473,7 +454,6 @@ class PromoteToStaffByEmailView(views.APIView):
             )
 
 def servir_arquivo_banco(request, pk):
-    """Serve um arquivo armazenado no PostgreSQL."""
     from .models import ArquivoBanco
     arquivo = get_object_or_404(ArquivoBanco, pk=pk)
     response = HttpResponse(
@@ -493,10 +473,9 @@ class ExameAgendamentoViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == 'create':
-            return [AllowAny()]  # Formulário público
+            return [AllowAny()]
         return [IsAdminUser()]
 
-    # perform_create simples — sem vínculo de usuário
     def perform_create(self, serializer):
         serializer.save()
 
@@ -527,6 +506,7 @@ class ExameAgendamentoViewSet(viewsets.ModelViewSet):
         )
         return f"https://wa.me/{numero}?text={urllib.parse.quote(mensagem)}"
 
+
 class AdminClientesListView(APIView):
     permission_classes = [IsAdminUser]
 
@@ -544,8 +524,8 @@ class AdminClientesListView(APIView):
                 Q(email__icontains=search)
             )
 
-        total   = qs.count()
-        offset  = (page - 1) * limit
+        total    = qs.count()
+        offset   = (page - 1) * limit
         usuarios = qs[offset:offset + limit]
 
         results = [
@@ -553,7 +533,7 @@ class AdminClientesListView(APIView):
                 'id':       u.id,
                 'nome':     u.get_full_name() or u.username,
                 'email':    u.email,
-                'telefone': getattr(u, 'telefone', '') or '',
+                'telefone': getattr(getattr(u, 'perfil', None), 'telefone', '') or '',
                 'status':   'Ativo' if u.is_active else 'Inativo',
             }
             for u in usuarios
@@ -576,8 +556,9 @@ class AdminClienteDetalheView(APIView):
         except User.DoesNotExist:
             return Response({'erro': 'Cliente não encontrado.'}, status=404)
 
-        nome   = request.data.get('nome', '').strip()
-        email  = request.data.get('email', '').strip()
+        nome       = request.data.get('nome', '').strip()
+        email      = request.data.get('email', '').strip()
+        telefone   = request.data.get('telefone', '').strip()
         status_val = request.data.get('status')
 
         if nome:
@@ -595,11 +576,16 @@ class AdminClienteDetalheView(APIView):
 
         usuario.save()
 
+        # salva telefone no PerfilUsuario
+        perfil, _ = PerfilUsuario.objects.get_or_create(usuario=usuario)
+        perfil.telefone = telefone
+        perfil.save()
+
         return Response({
             'id':       usuario.id,
             'nome':     usuario.get_full_name() or usuario.username,
             'email':    usuario.email,
-            'telefone': getattr(usuario, 'telefone', '') or '',
+            'telefone': perfil.telefone or '',
             'status':   'Ativo' if usuario.is_active else 'Inativo',
         })
 
@@ -608,9 +594,9 @@ class AdminCriarClienteView(APIView):
     permission_classes = [IsAdminUser]
 
     def post(self, request):
-        nome     = request.data.get('nome', '').strip()
-        email    = request.data.get('email', '').strip()
-        telefone = request.data.get('telefone', '').strip()
+        nome       = request.data.get('nome', '').strip()
+        email      = request.data.get('email', '').strip()
+        telefone   = request.data.get('telefone', '').strip()
         status_val = request.data.get('status', 'Ativo')
 
         if not nome or not email:
@@ -632,14 +618,15 @@ class AdminCriarClienteView(APIView):
             is_active=(status_val == 'Ativo'),
         )
 
-        if hasattr(usuario, 'telefone') and telefone:
-            usuario.telefone = telefone
-            usuario.save()
+        # salva telefone no PerfilUsuario
+        perfil, _ = PerfilUsuario.objects.get_or_create(usuario=usuario)
+        perfil.telefone = telefone
+        perfil.save()
 
         return Response({
             'id':       usuario.id,
             'nome':     usuario.get_full_name(),
             'email':    usuario.email,
-            'telefone': telefone,
+            'telefone': perfil.telefone or '',
             'status':   'Ativo' if usuario.is_active else 'Inativo',
         }, status=201)
