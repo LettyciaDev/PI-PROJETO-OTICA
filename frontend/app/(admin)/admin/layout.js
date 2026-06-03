@@ -14,7 +14,7 @@ export default function AdminLayout({ children }) {
     layoutContainer: {
       display: 'flex',
       minHeight: '100vh',
-      backgroundColor: '#F9F6F0',
+      backgroundColor: 'var(--bg)',
     },
     sidebar: {
       width: '280px',

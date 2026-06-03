@@ -1,7 +1,6 @@
 .container{
   padding: 40px;
-  min-height: 100vh;
-  background: #f5f1ed;
+  min-height: 100vh;  
 }
 
 .topo{
@@ -14,8 +13,8 @@
 .topo h1{
   font-size: 45px;
   color: #6b3e26;
-  font-family: 'Jomolhari', serif;
-  letter-spacing: 4px;
+  font-family: 'Joan', serif;
+  margin-bottom: 15px;
 }
 
 .topo p{

@@ -159,7 +159,7 @@ export default function ClientesAdmin() {
       {/* TOPO */}
       <div className={styles.topo}>
         <div>
-          <h1>CLIENTES</h1>
+          <h1>Clientes</h1>
           <p>Gerencie todos os clientes da ótica.</p>
         </div>
         <button className={styles.botaoNovo} onClick={() => router.push('/admin/clientes/novo')}>

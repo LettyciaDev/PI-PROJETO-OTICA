@@ -1,6 +1,5 @@
 .container {
   padding: 50px;
-  background: #f5f1ed;
   min-height: 100vh;
 }
 
@@ -14,7 +13,7 @@
 .title {
   font-size: 45px;
   color: #6b3e26;
-  font-family: 'Times New Roman', serif;
+  font-family: 'Joan', serif;
   margin: 0;
 }
 

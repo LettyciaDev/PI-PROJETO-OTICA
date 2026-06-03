@@ -4,14 +4,14 @@
   max-width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Joan', serif;
   background: #f5f1ed;
 }
 
 .titulo{
   font-size: 45px;
   color: #6b3e26;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Joan', serif;
   font-weight: 400;
   margin-bottom: 50px;
   letter-spacing: 1px;

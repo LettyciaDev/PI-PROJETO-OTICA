@@ -1,7 +1,6 @@
 .container{
   padding: 40px;
   min-height: 100vh;
-  background: #f5f1ed;
 }
 
 .topo{
@@ -15,7 +14,7 @@
   font-size: 45px;
   color: #6b3e26;
   font-family: 'Jomolhari', serif;
-  letter-spacing: 4px;
+  margin-bottom: 1px;
 }
 
 .topo p{
@@ -60,7 +59,7 @@
 }
 
 .card p{
-  color: #666;
+  color: var(--brown-dark);
   margin-top: 10px;
   font-family: 'Jomolhari', serif;
 }
@@ -193,6 +192,8 @@
   padding: 36px;
   width: 100%;
   max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
 }
 
