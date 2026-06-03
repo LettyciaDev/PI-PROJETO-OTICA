@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import styles from './produto.module.css';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 const ESTRELAS = [1, 2, 3, 4, 5];
 
