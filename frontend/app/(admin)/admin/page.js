@@ -17,8 +17,8 @@ export default function DashboardPage() {
         const headers = authHeaders();
 
         const [resReservas, resExames] = await Promise.all([
-          fetch('http://localhost:8000/api/reservas/', { headers }),
-          fetch('http://localhost:8000/api/exames/', { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservas/`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/exames/`, { headers }),
         ]);
 
         if (resReservas.status === 401 || resExames.status === 401) {

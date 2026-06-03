@@ -118,7 +118,7 @@ export default function PesquisaPage() {
     setBuscou(false);
     try {
       const res = await fetch(
-        `http://localhost:8000/api/produtos/?search=${encodeURIComponent(q)}`
+        `${process.env.NEXT_PUBLIC_API_URL}/produtos/?search=${encodeURIComponent(q)}`
       );
       const data = await res.json();
       // suporta paginação DRF ({ results: [...] }) ou lista direta
