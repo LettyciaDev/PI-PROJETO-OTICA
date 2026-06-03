@@ -6,6 +6,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
+import os
+
+base_url = os.getenv('FRONTEND_URL', 'https://vizzootica.com')
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -146,7 +149,7 @@ class ItemCarrinhoSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(caminho_relativo)
-            return f"http://localhost:8000{caminho_relativo}"
+            return f"{base_url}{caminho_relativo}"
         except Exception:
             return None
 

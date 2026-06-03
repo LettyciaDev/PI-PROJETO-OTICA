@@ -88,7 +88,7 @@ class PasswordResetRequestView(views.APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
             
-            frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+            frontend_url = getattr(settings, 'FRONTEND_URL', 'https://vizzootica.com')
             reset_url = f"{frontend_url}/reset-password/{uid}/{token}/"
             
             subject = "Recuperação de Senha - Minha API"

@@ -322,7 +322,7 @@ export default function ProdutoCliente({ oculos }) {
 
   async function confirmarEIrAoCarrinho() {
     setAdicionando(true);
-    const res = await fetch('http://localhost:8000/api/carrinho/', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({

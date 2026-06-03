@@ -40,7 +40,7 @@ export default function Page() {
 
     async function fetchCarrinho() {
       try {
-        const res = await fetch('http://localhost:8000/api/carrinho/', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/`, {
           headers: authHeaders(),
         });
 
@@ -81,7 +81,7 @@ export default function Page() {
 
     setLoadingItem(id);
     try {
-      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/${id}/`, {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ quantidade: item.quantidade + 1 }),
@@ -117,7 +117,7 @@ export default function Page() {
 
     setLoadingItem(id);
     try {
-      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/${id}/`, {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ quantidade: item.quantidade - 1 }),
@@ -200,7 +200,7 @@ export default function Page() {
       const headers = authHeaders();
       delete headers['Content-Type'];
 
-      const res = await fetch('http://localhost:8000/api/reservas/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservas/`, {
         method: 'POST',
         headers,
         body: formData,
@@ -233,7 +233,7 @@ export default function Page() {
     const id = modalExcluir;
     setModalExcluir(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/carrinho/${id}/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/${id}/`, {
         method: 'DELETE',
         headers: authHeaders(),
       });

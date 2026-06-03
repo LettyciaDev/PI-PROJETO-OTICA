@@ -10,7 +10,7 @@ export function CarrinhoProvider({ children }) {
 
   const recarregar = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/carrinho/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/carrinho/`, {
         headers: authHeaders(),
       });
       if (!res.ok) return;
