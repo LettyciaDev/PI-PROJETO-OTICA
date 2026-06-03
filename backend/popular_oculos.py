@@ -12,7 +12,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
 
-from core.models import Oculos, OculosVarianteCor
+from backend.core.models import Oculos, OculosVarianteCor
 
 oculos_data = [
     {
