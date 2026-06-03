@@ -6,7 +6,7 @@ import Image from "next/image";
 import styles from "./perfil.module.css";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 function getToken() {
   return typeof window !== "undefined" ? localStorage.getItem("access") : null;
